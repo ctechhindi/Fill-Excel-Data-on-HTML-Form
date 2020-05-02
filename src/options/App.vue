@@ -362,7 +362,8 @@ export default {
       var that = this;
       e.preventDefault();
 
-      if (this.excelFileSettings.dateFormate !== null && that.excelFileSettings.dateFormate !== "") {
+      if (this.excelFileSettings.dateFormate === null || that.excelFileSettings.dateFormate === "") {
+        console.error("Date Formate Invalid");
         return false
       }
 

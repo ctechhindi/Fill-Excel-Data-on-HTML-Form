@@ -2,7 +2,27 @@
 
 Fill data in HTML form with Excel sheet from Chrome Extension.
 
-## Installation
+![](src/icons/icon_192.png)
+
+## Features
+
+* Fill Automatic Excel Sheet Data in the HTML Form
+* Send Request for Insert Entry
+* and more..
+
+## Screenshot
+
+![](screenshot/Screenshot(139).png)
+![](screenshot/Screenshot(140).png)
+![](screenshot/Screenshot(141).png)
+![](screenshot/Screenshot(142).png)
+![](screenshot/Screenshot(143).png)
+![](screenshot/Screenshot(144).png)
+
+
+## Debugging
+
+Only for computer insect.
 
 ```bash
 npm run build:dev
@@ -11,7 +31,7 @@ npm run watch:dev
 npm run build-zip
 ```
 
-## Before Build
+## Tips Before Build
 
 - Comment all log messages
 - Delete Temp Folder
@@ -22,13 +42,9 @@ npm run watch
 npm run build-zip
 ```
 
-## Library
+## Using Libraries
 
-* https://github.com/surmon-china/vue-codemirror
-
-## Errors
-
-* https://stackoverflow.com/questions/21177387/caution-provisional-headers-are-shown-in-chrome-debugger
+* [vue-codemirror](https://github.com/surmon-china/vue-codemirror)
 
 ## Keys Custom JS Script [Option Page]
 
@@ -44,7 +60,7 @@ var currentFillData = FillAPP.cData;
 var currentFillData = this.data;
 ```
 
-## Links
+## Extension Page
 
 ```
 chrome-extension://celcfdcmlebphlhcadpiepjliabdobhj/options/options.html
@@ -53,7 +69,7 @@ chrome-extension://celcfdcmlebphlhcadpiepjliabdobhj/request/request.html
 
 ## Custom Class
 
-1. CreateRequest.js
+1. `CreateRequest.js`
 
 ```js
 try {
@@ -88,3 +104,28 @@ try {
     console.error(e)
 }
 ```
+
+## Errors
+
+* https://stackoverflow.com/questions/21177387/caution-provisional-headers-are-shown-in-chrome-debugger
+
+## Browser Support
+
+- `Chrome (Latest)`
+
+
+## Changelog
+
+### V.0.0.1 `(Beta)`
+
+* Form Data Request Sent on Server
+* Fill Automatic HTML Form
+* Use Custom JS Script in HTML Field's
+
+## Reporting Issues radioactive
+
+If you have a problem with this plugin or found any bug, please open an issue on GitHub.
+
+## Copyright and License copyright
+
+Code copyright 2020 ctechhindi. Code released under the MIT license.
