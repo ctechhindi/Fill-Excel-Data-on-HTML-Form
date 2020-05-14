@@ -1,15 +1,18 @@
 <template>
   <div class="options">
+    <b-loading :is-full-page="true" :active.sync="isFullPageLoading" :can-cancel="false"></b-loading>
     <Header></Header>
     <b-tabs v-model="activeTabIndex" position="is-centered" expanded class="block">
       <!-- Upload Excel Sheet Data -->
       <b-tab-item label="Upload Data" icon="upload">
         <div class="container">
           <b-field grouped>
-            <!-- Excel Date Formate Output -->
-            <b-field label="Excel Date Formate Output" expanded>
-              <b-input v-model="excelFileSettings.dateFormate" placeholder="Enter Excel Date Formate Output"></b-input>
-            </b-field>
+            <!-- Excel Date Format Output -->
+            <b-tooltip label="Default Format: yyyy-mm-dd" style="width: 100%;">
+              <b-field label="Excel Date Format Output" expanded>
+                <b-input v-model="excelFileSettings.dateFormat" placeholder="Enter Excel Date Format Output"></b-input>
+              </b-field>
+            </b-tooltip>
           </b-field>
           <b-collapse class="panel" :open="true">
             <div slot="trigger" class="panel-heading notification is-danger">
@@ -29,7 +32,7 @@
                   </div>
                   <div class="level-right">
                     <p class="level-item">
-                      <a target="_blank" href="./upload_file.xlsx" class="button is-info">
+                      <a target="_blank" href="../script/demo-excel-data.xlsx" class="button is-info">
                         <b-icon icon="file-excel"></b-icon>
                         <span>&nbsp;Excel Simple File</span>
                       </a>
@@ -81,17 +84,38 @@
       <b-tab-item label="Settings" icon="settings">
         <div class="container">
           <b-field grouped>
+            <!-- Action URL Type -->
+            <b-field label="Action URL Type" expanded>
+              <b-select placeholder="Select a url type" v-model="url.actionType" @input="changeActionURLType" expanded>
+                <option value="fullPath">Full Path</option>
+                <option value="pathName">location.pathname</option>
+              </b-select>
+            </b-field>
             <!-- Action URL -->
             <b-field label="Action URL" expanded>
               <b-input v-model="url.action" placeholder="Enter Action URL"></b-input>
+            </b-field>
+            <!-- Error URL -->
+            <!-- <b-field label="Error URL" expanded>
+              <b-input v-model="url.error" placeholder="Enter Error URL"></b-input>
+            </b-field> -->
+          </b-field>
+
+          <b-field grouped>
+            <!-- Success URL Type -->
+            <b-field label="Success URL Type" expanded>
+              <b-select placeholder="Select a url type" v-model="url.successType" @input="changeSuccessURLType" expanded>
+                <option value="fullPath">Full Path</option>
+                <option value="pathName">location.pathname</option>
+              </b-select>
             </b-field>
             <!-- Success URL -->
             <b-field label="Success URL" expanded>
               <b-input v-model="url.success" placeholder="Enter Success URL"></b-input>
             </b-field>
-            <!-- Error URL -->
-            <b-field label="Error URL" expanded>
-              <b-input v-model="url.error" placeholder="Enter Error URL"></b-input>
+            <!-- Success URL: Message -->
+            <b-field label="Success Message" expanded>
+              <b-input v-model="url.successMsg" placeholder="Enter Success Message"></b-input>
             </b-field>
           </b-field>
 
@@ -103,11 +127,11 @@
               </div>
             </div>
             <div class="level-right">
-              <b-tooltip label="Insert New Key">
-                <b-button type="is-success" icon-left="plus" @click="insertNewKey"></b-button>
-              </b-tooltip>&nbsp;
               <b-tooltip label="Fetch Key from Excel Data">
                 <b-button type="is-info" icon-left="key" @click="fetchKeysInExcelData"></b-button>
+              </b-tooltip>&nbsp;
+              <b-tooltip label="Insert New Key">
+                <b-button type="is-success" icon-left="plus" @click="insertNewKey"></b-button>
               </b-tooltip>&nbsp;
               <b-tooltip label="Clear All Keys Data" type="is-danger">
                 <b-button type="is-danger" icon-left="delete" @click="deleteKeysData"></b-button>
@@ -129,27 +153,42 @@
           </nav>
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-show="Object.keys(excelSheetKeys).length > 0">
             <thead>
-              <th>Key</th>
+              <th>ON/OFF</th>
+              <th>
+                <b-tooltip label="Table Header Names in Excel Sheet" position="is-right">
+                  Key
+                </b-tooltip>
+              </th>
               <th>Element Type</th>
               <th>Action Element</th>
               <th>Action</th>
             </thead>
             <tbody>
               <tr v-for="(data, index) in excelSheetKeys" :key="index">
-                <td>{{ index }}</td>
-                <td style="width: 200px;">
+                <td style="width: 130px;">
+                  <div class="field">
+                    <b-switch v-model="data.is_active" type="is-success">
+                      {{ (data.is_active === true)? "ON":"OFF" }}
+                    </b-switch>
+                  </div>
+                </td>
+                <td>
+                  <span v-if="index === 'form_submit'" title="After the form is successful submit, you can give what script you want to run."><code>{{ index }}</code></span>
+                  <span v-else>{{ index }}</span>
+                </td>
+                <td style="width: 250px;">
                   <b-field>
                     <b-select v-model="data.element_type" placeholder="Select element type" expanded>
                       <option value="id">ID</option>
-                      <option value="class">Class</option>
-                      <option value="jsQuery">document.querySelector()</option>
+                      <!-- <option value="class">Class</option> -->
+                      <option value="querySelector">document.querySelector()</option>
                     </b-select>
                   </b-field>
                 </td>
                 <td>
                   <b-input v-model="data.element" placeholder="Enter element"></b-input>
                 </td>
-                <td>
+                <td style="width: 120px;">
                   <b-tooltip :type="(data.is_runJScript == true)? 'is-success':'is-warning'" label="Insert JS Script">
                     <b-button :type="(data.is_runJScript == true)? 'is-success':'is-warning'" icon-left="nodejs" @click="openScriptModel(index)"></b-button>
                   </b-tooltip>&nbsp;
@@ -271,16 +310,19 @@ export default {
       activeTabIndex: 0,
       // Excel Sheet Data
       excelSheetData: "",
-      // Excel Date Formate Output
+      // Excel Date Format Output
       excelFileSettings: {
-        dateFormate: "yyyy-mm-dd",
+        dateFormat: "yyyy-mm-dd",
       },
       // Data Keys
       excelSheetKeys: {},
       // Action URL
       url: {
+        actionType: "fullPath",
         action: "",
+        successType: "fullPath",
         success: "",
+        successMsg: "",
         error: "",
       },
       importKeyJSONFile: null,
@@ -304,6 +346,8 @@ export default {
         obj: [],
         total: 0,
       },
+      // Buefy: Full Page Loading
+      isFullPageLoading: false,
     };
   },
   methods: {
@@ -362,8 +406,8 @@ export default {
       var that = this;
       e.preventDefault();
 
-      if (this.excelFileSettings.dateFormate === null || that.excelFileSettings.dateFormate === "") {
-        console.error("Date Formate Invalid");
+      if (this.excelFileSettings.dateFormat === null || that.excelFileSettings.dateFormat === "") {
+        console.error("Date Format Invalid");
         return false
       }
 
@@ -377,7 +421,7 @@ export default {
         var workbook = XLS.read(data, {
           type: "binary",
           cellDates: true,
-          dateNF: that.excelFileSettings.dateFormate
+          dateNF: that.excelFileSettings.dateFormat
         });
 
         /* DO SOMETHING WITH workbook HERE */
@@ -420,6 +464,7 @@ export default {
                 'element': '',
                 'jscript': '',
                 'is_runJScript': false,
+                'is_active': true,
               };
             }
           });
@@ -470,10 +515,14 @@ export default {
               'element': '',
               'jscript': '',
               'is_runJScript': false,
+              'is_active': true,
             };
             
             // Set New Key in the Object
             this.$set(this.excelSheetKeys, value, newKey)
+
+            // Push New Key in the Excel Data
+            this.pushNewKeyInExcelData(value)
 
           } else {
             this.$buefy.toast.open({
@@ -484,6 +533,29 @@ export default {
           }
         }
       })
+    },
+
+    /**
+     * Push New Key in the All Excel Data
+     */
+    pushNewKeyInExcelData(newKey) {
+      if (this.excelSheetData && this.excelSheetData.length > 0) {
+
+        // Start: Loading
+        this.isFullPageLoading = true
+
+        var newData = JSON.parse(this.excelSheetData).map(function(el) {
+          var o = Object.assign({}, el);
+          o[newKey] = "custom_key";
+          return o;
+        });
+
+        // 
+        this.excelSheetData = JSON.stringify(newData);
+
+        // Start: Loading
+        this.isFullPageLoading = false
+      }
     },
 
     /**
@@ -498,10 +570,37 @@ export default {
         hasIcon: true,
         onConfirm: () => {
           if (this.excelSheetKeys[index] !== undefined) {
-            this.$delete(this.excelSheetKeys, index)
+
+            // Delete Key in the All Excel Sheet Data
+            this.deleteKeyInExcelData(this.excelSheetKeys[index].key);
+
+            this.$delete(this.excelSheetKeys, index);
           }
         }
       });
+    },
+
+    /**
+     * Push New Key in the All Excel Data
+     */
+    deleteKeyInExcelData(newKey) {
+      if (this.excelSheetData && this.excelSheetData.length > 0) {
+
+        // Start: Loading
+        this.isFullPageLoading = true
+
+        var newData = JSON.parse(this.excelSheetData).map(function(el) {
+          if (el[newKey] !== undefined) {
+            delete el[newKey]
+            return el
+          }
+        });
+
+        this.excelSheetData = JSON.stringify(newData);
+
+        // Start: Loading
+        this.isFullPageLoading = false
+      }
     },
 
     /**
@@ -624,13 +723,73 @@ export default {
       }
     },
 
+    /**
+     * Change Action URL
+     * --------------------------------
+     * Change Full URL to pathname URL
+     */
+    changeActionURLType(val) {
+      if (val) {
+        if (val === "pathName" && this.url.action !== "") {
+          try {
+            var url = new URL(this.url.action);
+            if (url.pathname) {
+              this.url.action = url.pathname
+            }
+          } catch (error) {
+            console.error("changeActionURLType -> error", error)
+          }
+        } else if (val === "fullPath" && this.url.action !== "") {
+          try {
+            var url = new URL(this.url.action);
+            if (!url.pathname) {
+              this.url.action = ""
+            }
+          } catch (error) {
+            this.url.action = ""
+            console.error("changeActionURLType -> error", error)
+          }
+        }
+      }
+    },
+
+    /**
+     * Change Success URL
+     * --------------------------------
+     * Change Full URL to pathname URL
+     */
+    changeSuccessURLType(val) {
+      if (val) {
+        if (val === "pathName" && this.url.success !== "") {
+          try {
+            var url = new URL(this.url.success);
+            if (url.pathname) {
+              this.url.success = url.pathname
+            }
+          } catch (error) {
+            console.error("changeSuccessURLType -> error", error)
+          }
+        } else if (val === "fullPath" && this.url.success !== "") {
+          try {
+            var url = new URL(this.url.success);
+            if (!url.pathname) {
+              this.url.success = ""
+            }
+          } catch (error) {
+            this.url.success = ""
+            console.error("changeSuccessURLType -> error", error)
+          }
+        }
+      }
+    },
+
     /**______________ Convert Data _______________ */
 
     /**
      * Convert Excel Data to JSON
-     * -----------------------------------
+     * ---------------------------
      * Add Settings Keys
-     * ----------------------
+     * ----------------------------------------------------
      * 1. 'status' => Data Successful Saved!
      * 2. 'isLoading' => Request is Under Proccess..
      * 3. `totalErrorRequest` => Count Total Fail Request
@@ -646,6 +805,7 @@ export default {
       if (this.excelSheetData !== "") {
         var excelData = JSON.parse(this.excelSheetData);
         if (typeof(excelData) === "object" && excelData.length > 0) {
+          // console.log("convertExcelData -> excelData", excelData)
           excelData.forEach(function (item, index) {
 
             // Insert Settings Keys

@@ -37,7 +37,7 @@
                 >
                   <option value="id">ID</option>
                   <option value="class">Class</option>
-                  <option value="jsQuery">document.querySelector()</option>
+                  <option value="querySelector">document.querySelector()</option>
                 </b-select>
               </b-field>
             </td>
@@ -188,6 +188,22 @@ export default {
                       that.excelSheetKeys[resp.excelKey].element +
                       "," +
                       resp.id;
+                  }
+                }
+
+                /**
+                 * Field (querySelector)
+                 */
+                if (resp.querySelector) {
+                  // Update Excel Sheet Data
+                  that.excelSheetKeys[resp.excelKey].element_type = "querySelector";
+                  if (that.excelSheetKeys[resp.excelKey].element === "") {
+                    that.excelSheetKeys[resp.excelKey].element = resp.querySelector;
+                  } else {
+                    that.excelSheetKeys[resp.excelKey].element =
+                      that.excelSheetKeys[resp.excelKey].element +
+                      "," +
+                      resp.querySelector;
                   }
                 }
               }

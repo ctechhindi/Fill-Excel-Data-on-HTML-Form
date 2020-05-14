@@ -28,41 +28,55 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
           // console.log("tab", tab)
 
           /**
-           * Match URL to Action URL
+           * TODO: Check Page Path
+           * -------------------
+           * fullPath, pathName
            */
-          // if (tab.url.match(/https:\/\/pfms.nic.in\/BenificaryManagement\/AddUpdateBenifeciary.aspx\/*/)) {
-          if (tab.url === url.action) {
-            // console.log("url.action", url.action)
-            // console.log("excel json data", k[excelJSONData])
-            // console.log("keys data", k[keysElement])
+          if (url.actionType === "fullPath") {
+            if (tab.url !== url.action) {
+              console.error("Path Not Match", url);
+              return
+            }
+          } else if (url.actionType === "pathName") {
+            var tabURLData = new URL(tab.url);
+            if (tabURLData.pathname !== url.action) {
+              console.error("Path Not Match", url);
+              return
+            }
+          } else {
+            return
+          }
 
-            // Keys
-            if (k[keysElement] !== undefined && k[keysElement] !== null && Object.keys(k[keysElement]).length > 0) {
-              // Excel JSON Data
-              if (k[excelJSONData] !== undefined && k[excelJSONData] !== null && Object.keys(k[excelJSONData]).length > 0) {
-                var excelJSONObj = k[excelJSONData];
-                if (excelJSONObj.obj !== undefined && excelJSONObj.obj.length > 0) {
+          // console.log("url.actionType", url.actionType)
+          // console.log("excel json data", k[excelJSONData])
+          // console.log("keys data", k[keysElement])
 
-                  // Execute Script
-                  chrome.tabs.executeScript(tabId, {
-                    file: '/script/run.js',
-                  }, function () {
-                    if (chrome.runtime.lastError) {
-                      console.error(chrome.runtime.lastError.message);
-                    }
-                  });
+          // Keys
+          if (k[keysElement] !== undefined && k[keysElement] !== null && Object.keys(k[keysElement]).length > 0) {
+            // Excel JSON Data
+            if (k[excelJSONData] !== undefined && k[excelJSONData] !== null && Object.keys(k[excelJSONData]).length > 0) {
+              var excelJSONObj = k[excelJSONData];
+              if (excelJSONObj.obj !== undefined && excelJSONObj.obj.length > 0) {
 
-                } else {
-                  console.error("Excel JSON Data Not Found!");
-                }
+                // Execute Script
+                chrome.tabs.executeScript(tabId, {
+                  file: '/script/run.js',
+                }, function () {
+                  if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError.message);
+                  }
+                });
 
               } else {
-                console.error("Excel JSON Object Not Found!");
+                console.error("Excel JSON Data Not Found!");
               }
 
             } else {
-              console.error("Keys and Element ID Data Not Found!");
+              console.error("Excel JSON Object Not Found!");
             }
+
+          } else {
+            console.error("Keys and Element ID Data Not Found!");
           }
 
         } else {

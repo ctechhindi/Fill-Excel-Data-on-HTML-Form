@@ -10,13 +10,20 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Send Request for Insert Entry
 * and more..
 
+## [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
+
 ## Screenshot
 
 ![](screenshot/Screenshot(139).png)
+
 ![](screenshot/Screenshot(140).png)
+
 ![](screenshot/Screenshot(141).png)
+
 ![](screenshot/Screenshot(142).png)
+
 ![](screenshot/Screenshot(143).png)
+
 ![](screenshot/Screenshot(144).png)
 
 
@@ -51,7 +58,14 @@ npm run build-zip
 Global Variable in the Key's Custom JS Script.
 
 ```js
-var currentFillData = FillAPP.cData;
+// Current Active JSON Data
+console.log(FillAPP.cData);
+
+// Current Active Key Name
+console.log(FillAPP.cKeyName);
+
+// Fetch Current Active Key Details
+console.log(FillAPP.htmlKeys[FillAPP.cKeyName]);
 ```
 
 ## Keys Custom JS Script [Request Page]
@@ -105,6 +119,13 @@ try {
 }
 ```
 
+## Predefined Custom Keys
+
+* `form_submit` : After the form is successful submit, you can give what script you want to run.
+* `status`
+* `isLoading`
+* `totalErrorRequest`
+
 ## Errors
 
 * https://stackoverflow.com/questions/21177387/caution-provisional-headers-are-shown-in-chrome-debugger
@@ -113,8 +134,21 @@ try {
 
 - `Chrome (Latest)`
 
-
 ## Changelog
+
+### `Processing`
+
+* 
+
+### V.0.0.2
+
+* After the form is successful submit, you can give what script you want to run in this custom key `form_submit`.
+* Run those `keys` which are not in the excel sheet
+* Fix Spelling Mistake
+* Add Action URL Type `{fullPath, pathName}`
+* Update Auto Catch Element Identity
+* Add Demo Site and Excel Sheet Data
+* https://phppot.com/demo/php-user-registration-form/
 
 ### V.0.0.1 `(Beta)`
 
