@@ -138,7 +138,9 @@ try {
 
 ### `Processing`
 
-* 
+### V.0.0.3
+
+* Fix Bug: auto save entry
 
 ### V.0.0.2
 
