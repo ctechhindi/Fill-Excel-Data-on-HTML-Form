@@ -34,7 +34,7 @@
                     <p class="level-item">
                       <a target="_blank" href="../script/demo-excel-data.xlsx" class="button is-info">
                         <b-icon icon="file-excel"></b-icon>
-                        <span>&nbsp;Excel Simple File</span>
+                        <span>&nbsp;Excel Sample File</span>
                       </a>
                       &nbsp;
                       <button

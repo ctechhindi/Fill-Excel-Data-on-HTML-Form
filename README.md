@@ -4,13 +4,17 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ![](src/icons/icon_192.png)
 
-## Features
+## ✨ Features
 
 * Fill Automatic Excel Sheet Data in the HTML Form
 * Send Request for Insert Entry
 * and more..
 
-## [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
+## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
+
+## ✨ Demo
+
+
 
 ## Screenshot
 
@@ -27,7 +31,7 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 ![](screenshot/Screenshot(144).png)
 
 
-## Debugging
+## 🚀 Debugging
 
 Only for computer insect.
 
@@ -52,6 +56,7 @@ npm run build-zip
 ## Using Libraries
 
 * [vue-codemirror](https://github.com/surmon-china/vue-codemirror)
+* [SelectorGenerator](https://github.com/flamencist/SelectorGenerator)
 
 ## Keys Custom JS Script [Option Page]
 
@@ -138,6 +143,13 @@ try {
 
 ### `Processing`
 
+
+### V.0.0.4
+
+* Fix Spelling Mistake
+* Fix copy element selector 
+* Using new library
+
 ### V.0.0.3
 
 * Fix Bug: auto save entry
@@ -162,6 +174,6 @@ try {
 
 If you have a problem with this plugin or found any bug, please open an issue on GitHub.
 
-## Copyright and License copyright
+## 📝 Copyright and License copyright
 
 Code copyright 2020 ctechhindi. Code released under the MIT license.

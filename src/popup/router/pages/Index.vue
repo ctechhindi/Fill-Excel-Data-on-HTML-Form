@@ -196,9 +196,11 @@ export default {
                  */
                 if (resp.querySelector) {
                   // Update Excel Sheet Data
-                  that.excelSheetKeys[resp.excelKey].element_type = "querySelector";
+                  that.excelSheetKeys[resp.excelKey].element_type =
+                    "querySelector";
                   if (that.excelSheetKeys[resp.excelKey].element === "") {
-                    that.excelSheetKeys[resp.excelKey].element = resp.querySelector;
+                    that.excelSheetKeys[resp.excelKey].element =
+                      resp.querySelector;
                   } else {
                     that.excelSheetKeys[resp.excelKey].element =
                       that.excelSheetKeys[resp.excelKey].element +
