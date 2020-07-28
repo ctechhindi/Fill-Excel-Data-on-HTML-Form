@@ -25,27 +25,27 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         var url = k[actionURLKey];
         if (url.action !== undefined && url.action !== "") {
 
-          // console.log("tab", tab)
+          console.log("Tab Option: ", tab)
 
           /**
            * TODO: Check Page Path
            * -------------------
            * fullPath, pathName
            */
-          if (url.actionType === "fullPath") {
-            if (tab.url !== url.action) {
-              console.error("Path Not Match", url);
-              return
-            }
-          } else if (url.actionType === "pathName") {
-            var tabURLData = new URL(tab.url);
-            if (tabURLData.pathname !== url.action) {
-              console.error("Path Not Match", url);
-              return
-            }
-          } else {
-            return
-          }
+          // if (url.actionType === "fullPath") {
+          //   if (tab.url !== url.action || tab.url !== url.success) {
+          //     console.error("FULL Path Not Match", url);
+          //     return
+          //   }
+          // } else if (url.actionType === "pathName") {
+          //   var tabURLData = new URL(tab.url);
+          //   if (tabURLData.pathname !== url.action) {
+          //     console.error("Path Name Not Match", url);
+          //     return
+          //   }
+          // } else {
+          //   return
+          // }
 
           // console.log("url.actionType", url.actionType)
           // console.log("excel json data", k[excelJSONData])

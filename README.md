@@ -12,8 +12,7 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
 
-## ✨ Demo
-
+## 🎬 Video Tutorial
 
 
 ## Screenshot
@@ -126,12 +125,13 @@ try {
 
 ## Predefined Custom Keys
 
+* `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `form_submit` : After the form is successful submit, you can give what script you want to run.
 * `status`
 * `isLoading`
 * `totalErrorRequest`
 
-## Errors
+## 🚫 Errors
 
 * https://stackoverflow.com/questions/21177387/caution-provisional-headers-are-shown-in-chrome-debugger
 
@@ -143,6 +143,12 @@ try {
 
 ### `Processing`
 
+* Create Popup Page
+
+### V.0.0.5
+
+* Fixed Success URL not Match.
+* Add new key `form_filled` = After the form is successful feeded, you can give what script you want to run.
 
 ### V.0.0.4
 

@@ -161,6 +161,7 @@
               </th>
               <th>Element Type</th>
               <th>Action Element</th>
+              <th>RUN Script</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -173,11 +174,12 @@
                   </div>
                 </td>
                 <td>
-                  <span v-if="index === 'form_submit'" title="After the form is successful submit, you can give what script you want to run."><code>{{ index }}</code></span>
+                  <span v-if="index === 'form_filled'" title="After the form is successful feeded, you can give what script you want to run."><code>{{ index }}</code></span>
+                  <span v-else-if="index === 'form_submit'" title="After the form is successful submit, you can give what script you want to run."><code>{{ index }}</code></span>
                   <span v-else>{{ index }}</span>
                 </td>
                 <td style="width: 250px;">
-                  <b-field>
+                  <b-field v-if="['form_filled', 'form_submit'].indexOf(index) < 0">
                     <b-select v-model="data.element_type" placeholder="Select element type" expanded>
                       <option value="id">ID</option>
                       <!-- <option value="class">Class</option> -->
@@ -186,7 +188,14 @@
                   </b-field>
                 </td>
                 <td>
-                  <b-input v-model="data.element" placeholder="Enter element"></b-input>
+                  <b-input v-if="['form_filled', 'form_submit'].indexOf(index) < 0" v-model="data.element" placeholder="Enter element"></b-input>
+                </td>
+                <td style="width: 120px;">
+                  <div class="field">
+                    <b-switch v-model="data.is_runJScript" type="is-success">
+                      {{ (data.is_runJScript === true)? "Yes":"No" }}
+                    </b-switch>
+                  </div>
                 </td>
                 <td style="width: 120px;">
                   <b-tooltip :type="(data.is_runJScript == true)? 'is-success':'is-warning'" label="Insert JS Script">
@@ -201,6 +210,7 @@
           </table>
         </div>
       </b-tab-item>
+
       <!-- Data -->
       <b-tab-item label="Excel Data" icon="database">
         <div class="container">
