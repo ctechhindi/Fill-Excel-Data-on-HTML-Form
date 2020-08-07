@@ -113,9 +113,28 @@
           </table>
         </div>
       </b-tab-item>
+
       <!-- Excel Sheet Data -->
       <b-tab-item label="Excel Sheet Data" icon="database">
         <div class="container" v-if="Object.keys(excelSheetJSONData).length > 0">
+          <nav class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <h3 class="title is-5">Send Request</h3>
+              </div>
+            </div>
+            <div class="level-right">
+              <b-tooltip label="Run all data request one click." type="is-danger">
+                <b-button type="is-danger" class="run_request_all" icon-left="run" @click="runRequestOnAllData()"></b-button>
+              </b-tooltip>&nbsp;
+              <b-tooltip label="Stop Request Loading /Reset Request Status" type="is-info">
+                <b-button type="is-info" class="run_request_all" icon-left="stop" @click="stopAllRequestStatus()"></b-button>
+              </b-tooltip>&nbsp;
+              <b-tooltip label="Export Request Field Data in the Excel Sheet" type="is-dark">
+                <b-button type="is-dark" icon-left="file-export" @click="exportRequestDataExcel">Export in Excel</b-button>
+              </b-tooltip>
+            </div>
+          </nav>
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-if="Object.keys(excelSheetJSONData.keys).length > 0">
             <thead>
               <th>Saved!</th>
@@ -128,19 +147,20 @@
               <tr v-for="(data, index) in excelSheetJSONData.obj" :key="index" :class="(data.status == true)? 'is-selected':''">
                 <td>
                   <div class="field">
-                    <b-checkbox v-model="data.status"></b-checkbox>
+                    <b-checkbox @input="changeEntryRequestStatus($event, index)" v-model="data.status"></b-checkbox>
                   </div>
                 </td>
                 <td>{{ index + 1}}</td>
                 <td v-for="key in excelSheetJSONData.keys" :key="key">{{ data[key] }}</td>
                 <td>
                   <b-tooltip label="Reset Request Loading" type="is-danger">
-                    <p @click="resetRequestLoading(index)">{{ data.isLoading }}</p>
+                    <p class="stop_request" @click="resetRequestLoading(index)">{{ data.isLoading }}</p>
                   </b-tooltip>
                 </td>
                 <td>
                   <b-tooltip :type="(data.status === true)? 'is-success':'is-warning'" label="Run Request">
-                    <b-button :type="(data.status === true)? 'is-success':'is-warning'" icon-left="run" :label="data.totalErrorRequest.toString()" :loading="data.isLoading" @click="runRequestOnData(index)"></b-button>
+                    <p @click="resetRequestLoading(index)" style="display: none;"></p>
+                    <b-button class="run_request" :type="(data.status === true)? 'is-success':'is-warning'" icon-left="run" :label="data.totalErrorRequest.toString()" :loading="data.isLoading" @click="runRequestOnData(index)"></b-button>
                   </b-tooltip>
                 </td>
               </tr>
@@ -198,6 +218,10 @@ Vue.use(VueCodemirror, /* {
   options: { theme: 'base16-dark', ... },
   events: ['scroll', ...]
 } */)
+
+// const Excel = require("exceljs");
+import XLSX from 'xlsx'
+// import { saveAs } from 'file-saver';
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -540,6 +564,9 @@ export default {
 
                     // STOP: Request Loading
                     this.excelSheetJSONData.obj[index].isLoading = false
+
+                    // Remove Request Error Object
+                    delete this.excelSheetJSONData.obj[index]["request_error"]
                   }
                 },
                 error => {
@@ -550,10 +577,16 @@ export default {
                     var errorMsg = JSON.stringify(error.resp)
                   }
 
-                  that.$buefy.toast.open({
+                  // that.$buefy.toast.open({
+                  //   message: errorMsg,
+                  //   position: 'is-bottom',
+                  //   type: 'is-danger'
+                  // })
+
+                  that.$buefy.notification.open({
                     message: errorMsg,
-                    position: 'is-bottom',
-                    type: 'is-danger'
+                    position: 'is-bottom-left',
+                    type: 'is-danger',
                   })
 
                   // STOP: Request Loading
@@ -561,6 +594,9 @@ export default {
 
                   // Increase: Total Error Request
                   ++this.excelSheetJSONData.obj[index].totalErrorRequest;
+
+                  // Store Error in this Excel Entry
+                  this.excelSheetJSONData.obj[index]["request_error"] = errorMsg
                 }
               )
 
@@ -572,6 +608,67 @@ export default {
                 type: 'is-danger'
               })
             }
+          }
+        }
+      }
+    },
+
+    /**
+     * RUN Request All Data
+     */
+    runRequestOnAllData() {
+      this.$buefy.dialog.confirm({
+        title: 'Send All Request',
+        message: 'Do you want to send all the requests at once. <br> If your Excel data is more than 500, then it may take you some time, so run it at a low entry level.',
+        confirmText: 'GO',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => {
+          $(".run_request.is-warning").click()
+        }
+      });
+    },
+
+    /**
+     * Stop/Reset `Request Status`
+     */
+    stopAllRequestStatus() {
+      var el = $(".run_request.is-warning.is-loading").parent()
+      el.each(function () {
+        var out = $(this).find("p")
+        if (out.length > 0) {
+          $(out).click()
+        }
+      })
+    },
+
+    /**
+     * Export Request Data in the Excel Data
+     */
+    exportRequestDataExcel() {
+      if (this.excelSheetJSONData.obj !== undefined) {
+        
+        var jsonData = XLSX.utils.json_to_sheet(this.excelSheetJSONData.obj)
+
+        // A workbook is the name given to an Excel file
+        var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+        // add Worksheet to Workbook
+        XLSX.utils.book_append_sheet(wb, jsonData, 'Request Status Data')
+
+        // export Excel file
+        XLSX.writeFile(wb, 'excel-data-backup.xlsx') // name of the file is 'book.xlsx'
+      }
+    },
+
+    /**
+     * Change Request Status
+     */
+    changeEntryRequestStatus(value, index) {
+      if (value === true) {
+        if (this.excelSheetJSONData.obj[index] !== undefined) {
+          if (this.excelSheetJSONData.obj[index].request_error !== undefined) {
+            delete this.excelSheetJSONData.obj[index].request_error
           }
         }
       }

@@ -97,7 +97,7 @@ const config = {
         },
       },
     ]),
-  ],
+  ]
 };
 
 if (config.mode === 'production') {

@@ -125,6 +125,12 @@ try {
 
 ## Predefined Custom Keys
 
+* `fill_action` : If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
+  ```js
+  // With this, when you click on this HTML Element, only your Form Feed will start.
+  document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
+  ```
+* `page_loaded` : After the page is fully loaded, you can give your Custom Script.
 * `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `form_submit` : After the form is successful submit, you can give what script you want to run.
 * `status`
@@ -145,9 +151,27 @@ try {
 
 * Create Popup Page
 
+* Fill Form data with trigger event
+
+### V.0.0.7
+
+* Add new key `page_loaded` = After the page is fully loaded, you can give your Custom Script.
+* Add new key `fill_action` = If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
+  * अगर आप Automatic Form Feed नहीं करवाना चाहते या फिर आपका Form किसी Request के बाद Open होता है तो आप Page में किसी भी HTML Element में Javascript event लगा सकते है तो जैसे वह Event Call होगा Form Feed हो जायेगा।
+  * Select HTML Element and Run Javascript Event on selected html element
+  * Event Types: "click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload", "force"
+  ```js
+  // With this, when you click on this HTML Element, only your Form Feed will start.
+  document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
+  ```
+* Send all the requests at once in the `Request Send Page`.
+* Stop/Reset `Request Status` in the `Request Send Page`.
+* Add New Library `npm install --save xlsx`
+* Export Request Excel Data in the Excel Sheet.
+
 ### V.0.0.6
 
-* FOR this site `https://trade.algofox.in/Admin/Users`
+* FOR this site `https://trade.algofox.in`
 
 ### V.0.0.5
 

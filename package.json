@@ -1,6 +1,6 @@
 {
   "name": "fill-excel-data-to-form",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Fill Excel Sheet Data into HTML Form",
   "author": "Jeevan Lal <jeevan15498@gmail.com>",
   "license": "MIT",
@@ -18,16 +18,20 @@
   },
   "dependencies": {
     "buefy": "^0.8.20",
+    "exceljs": "^4.1.1",
+    "file-saver": "^2.0.2",
     "vue": "^2.6.10",
     "vue-codemirror": "^4.0.6",
-    "vue-router": "^3.3.4",
-    "webextension-polyfill": "^0.3.1"
+    "vue-router": "^3.4.2",
+    "webextension-polyfill": "^0.3.1",
+    "xlsx": "^0.16.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/plugin-proposal-optional-chaining": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/runtime-corejs3": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/runtime-corejs3": "^7.11.2",
+    "@types/node": "^14.0.27",
     "archiver": "^3.0.0",
     "babel-loader": "^8.0.2",
     "copy-webpack-plugin": "^5.1.1",
@@ -42,7 +46,7 @@
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.10",
     "web-ext-types": "^2.1.0",
-    "webpack": "^4.44.0",
+    "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-extension-reloader": "^1.1.0"
   }

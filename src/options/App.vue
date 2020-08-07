@@ -151,7 +151,7 @@
               </b-tooltip>
             </div>
           </nav>
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-show="Object.keys(excelSheetKeys).length > 0">
+          <table class="table is-bordered is-narrow is-hoverable is-fullwidth" v-show="Object.keys(excelSheetKeys).length > 0">
             <thead>
               <th>ON/OFF</th>
               <th>
@@ -176,10 +176,12 @@
                 <td>
                   <span v-if="index === 'form_filled'" title="After the form is successful feeded, you can give what script you want to run."><code>{{ index }}</code></span>
                   <span v-else-if="index === 'form_submit'" title="After the form is successful submit, you can give what script you want to run."><code>{{ index }}</code></span>
+                  <span v-else-if="index === 'page_loaded'" title="After the page is fully loaded, you can give your Custom Script."><code>{{ index }}</code></span>
+                  <span v-else-if="index === 'fill_action'" title="If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page."><code>{{ index }}</code></span>
                   <span v-else>{{ index }}</span>
                 </td>
                 <td style="width: 250px;">
-                  <b-field v-if="['form_filled', 'form_submit'].indexOf(index) < 0">
+                  <b-field v-if="['form_filled', 'form_submit', 'page_loaded'].indexOf(index) < 0">
                     <b-select v-model="data.element_type" placeholder="Select element type" expanded>
                       <option value="id">ID</option>
                       <!-- <option value="class">Class</option> -->
@@ -188,7 +190,39 @@
                   </b-field>
                 </td>
                 <td>
-                  <b-input v-if="['form_filled', 'form_submit'].indexOf(index) < 0" v-model="data.element" placeholder="Enter element"></b-input>
+                  <b-field>
+                    <b-input v-if="['form_filled', 'form_submit', 'page_loaded'].indexOf(index) < 0" v-model="data.element" placeholder="Enter element"></b-input>
+                  </b-field>
+                  <b-tooltip v-if="index === 'fill_action'" label="Set HTML Element Event Type" position="is-top">
+                    <b-field>
+                      <b-select v-model="data.event_type" placeholder="Select element type" expanded>
+                        <option value="click">click</option>
+                        <option value="focus">focus</option>
+                        <option value="change">change</option>
+                        <option value="dblclick">dblclick</option>
+                        <option value="copy">copy</option>
+                        <option value="cut">cut</option>
+                        <option value="paste">paste</option>
+                        <option value="submit">submit</option>
+                        <option value="focusin">focusin</option>
+                        <option value="focusout">focusout</option>
+                        <option value="mousedown">mousedown</option>
+                        <option value="mouseenter">mouseenter</option>
+                        <option value="mouseleave">mouseleave</option>
+                        <option value="mousemove">mousemove</option>
+                        <option value="mouseup">mouseup</option>
+                        <option value="mouseover">mouseover</option>
+                        <option value="mouseout">mouseout</option>
+                        <option value="input">input</option>
+                        <option value="keydown">keydown</option>
+                        <option value="keypress">keypress</option>
+                        <option value="keyup">keyup</option>
+                        <option value="load">load</option>
+                        <option value="unload">unload</option>
+                        <option value="force">force</option>
+                      </b-select>
+                    </b-field>
+                  </b-tooltip>
                 </td>
                 <td style="width: 120px;">
                   <div class="field">
@@ -471,6 +505,7 @@ export default {
               t[item] = {
                 'key': item,
                 'element_type': 'id',
+                'event_type': 'click',
                 'element': '',
                 'jscript': '',
                 'is_runJScript': false,
@@ -522,6 +557,7 @@ export default {
             var newKey = {
               'key': value,
               'element_type': 'id',
+              'event_type': 'click', // Only for this key `fill_action`
               'element': '',
               'jscript': '',
               'is_runJScript': false,
