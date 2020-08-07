@@ -145,6 +145,10 @@ try {
 
 * Create Popup Page
 
+### V.0.0.6
+
+* FOR this site `https://trade.algofox.in/Admin/Users`
+
 ### V.0.0.5
 
 * Fixed Success URL not Match.

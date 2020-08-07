@@ -532,8 +532,9 @@ export default {
               // Send Request
               req.sentRequest().then(
                 res => {
-                  console.log("runRequestOnData -> res", res)
                   if (res === "Request Success") {
+                    console.log("runRequestOnData -> res", res)
+
                     // Update Excel Data
                     this.excelSheetJSONData.obj[index].status = true
 
@@ -543,8 +544,14 @@ export default {
                 },
                 error => {
                   console.error("runRequestOnData -> error", error)
+                  if (typeof(error.resp) === "string") {
+                    var errorMsg = error.resp
+                  } else if (typeof(error.resp) === "object") {
+                    var errorMsg = JSON.stringify(error.resp)
+                  }
+
                   that.$buefy.toast.open({
-                    message: error.toString(),
+                    message: errorMsg,
                     position: 'is-bottom',
                     type: 'is-danger'
                   })
