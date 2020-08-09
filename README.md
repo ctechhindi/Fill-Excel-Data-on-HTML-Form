@@ -12,7 +12,7 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
 
-## 🎬 Video Tutorial
+## 🎬 [Video Tutorial](https://www.youtube.com/watch?v=i4yHrVASRh4&t=5s)
 
 
 ## Screenshot
@@ -149,9 +149,21 @@ try {
 
 ### `Processing`
 
-* Create Popup Page
-
 * Fill Form data with trigger event
+* IF Request Not Send to Server Response
+  ```
+  {"readyState":0,"responseText":"","status":0,"statusText":"error"}
+  ```
+
+### V.0.0.8
+
+* Full Page Loading in the `Request Send Page`.
+* Add Request Settings Tab in the `Request Send Page`.
+* Count Total Successfully Saved Entry Data in the `Request Send Page`.
+* Hide Request Error Message if run bulk entry in the `Request Send Page`.
+* Show and Hide Request Error Response Data in the `Request Send Page`.
+* Show request error if mouseover request status table row in the `Request Send Page`. 
+  * ![](screenshot\update\request_error.png)
 
 ### V.0.0.7
 

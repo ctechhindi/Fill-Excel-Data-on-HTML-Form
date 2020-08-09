@@ -537,6 +537,14 @@ export default {
           this.excelSheetJSONData.keys = [];
           this.excelSheetJSONData.obj = [];
           this.excelSheetJSONData.total = 0;
+
+          // Remove Request Page Key Data: `objectVal__requestStatusData`
+          chrome.storage.local.remove(["objectVal__requestStatusData"], function() {
+            var error = chrome.runtime.lastError;
+            if (error) {
+              console.error(error);
+            }
+          })
         }
       });
     },

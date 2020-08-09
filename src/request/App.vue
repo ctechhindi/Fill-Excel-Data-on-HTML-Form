@@ -1,9 +1,10 @@
 <template>
   <div class="Request">
+    <b-loading :is-full-page="true" :active.sync="isFullPageLoading" :can-cancel="false"></b-loading>
     <Header></Header>
     <b-tabs v-model="activeTabIndex" position="is-centered" expanded class="block">
       <!-- Request Data -->
-      <b-tab-item label="Request Form Data" icon="earth">
+      <b-tab-item label="Set Request Data" icon="earth">
         <div class="container">
           <b-field grouped>
             <!-- Request Submit URL -->
@@ -115,12 +116,16 @@
       </b-tab-item>
 
       <!-- Excel Sheet Data -->
-      <b-tab-item label="Excel Sheet Data" icon="database">
+      <b-tab-item label="Send Request" icon="run">
         <div class="container" v-if="Object.keys(excelSheetJSONData).length > 0">
           <nav class="level">
             <div class="level-left">
-              <div class="level-item">
+              <div class="level-item" style="display: initial;">
                 <h3 class="title is-5">Send Request</h3>
+                <p style="font-size: smaller;" v-if="excelSheetJSONData.obj.length > 0">
+                  <span>Total Entry: {{ excelSheetJSONData.obj.length }},</span> 
+                  Saved: {{ requestStatusData.totalSaved }}
+                </p>
               </div>
             </div>
             <div class="level-right">
@@ -135,45 +140,83 @@
               </b-tooltip>
             </div>
           </nav>
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-if="Object.keys(excelSheetJSONData.keys).length > 0">
-            <thead>
-              <th>Saved!</th>
-              <th>#</th>
-              <th v-for="key in excelSheetJSONData.keys" :key="key">{{ key }}</th>
-              <th>Status</th>
-              <th>Action</th>
-            </thead>
-            <tbody>
-              <tr v-for="(data, index) in excelSheetJSONData.obj" :key="index" :class="(data.status == true)? 'is-selected':''">
-                <td>
-                  <div class="field">
-                    <b-checkbox @input="changeEntryRequestStatus($event, index)" v-model="data.status"></b-checkbox>
-                  </div>
-                </td>
-                <td>{{ index + 1}}</td>
-                <td v-for="key in excelSheetJSONData.keys" :key="key">{{ data[key] }}</td>
-                <td>
-                  <b-tooltip label="Reset Request Loading" type="is-danger">
-                    <p class="stop_request" @click="resetRequestLoading(index)">{{ data.isLoading }}</p>
-                  </b-tooltip>
-                </td>
-                <td>
-                  <b-tooltip :type="(data.status === true)? 'is-success':'is-warning'" label="Run Request">
-                    <p @click="resetRequestLoading(index)" style="display: none;"></p>
-                    <b-button class="run_request" :type="(data.status === true)? 'is-success':'is-warning'" icon-left="run" :label="data.totalErrorRequest.toString()" :loading="data.isLoading" @click="runRequestOnData(index)"></b-button>
-                  </b-tooltip>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-if="Object.keys(excelSheetJSONData.keys).length > 0">
+              <thead>
+                <th>Saved!</th>
+                <th>#</th>
+                <th v-for="key in excelSheetJSONData.keys" :key="key">{{ key }}</th>
+                <th v-if="requestPageSettings.isShowErrorRow === true">Error</th>
+                <th>Status</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                <tr v-for="(data, index) in excelSheetJSONData.obj" :key="index" :class="(data.status == true)? 'is-selected':''">
+                  <td>
+                    <div class="field">
+                      <b-checkbox @input="changeEntryRequestStatus($event, index)" v-model="data.status"></b-checkbox>
+                    </div>
+                  </td>
+                  <td>{{ index + 1}}</td>
+                  <td v-for="key in excelSheetJSONData.keys" :key="key">{{ data[key] }}</td>
+                  <td v-if="requestPageSettings.isShowErrorRow === true">
+                    <p v-if="data.request_error">
+                      <span v-if="(requestPageSettings.errorObjKey !== '')">
+                        {{ fetchErrorObjKey(data.request_error) }}
+                      </span>
+                      <span v-else>{{ data.request_error }}</span>
+                    </p>
+                  </td>
+                  <td>
+                    <b-tooltip :label="(data.request_error !== undefined)? data.request_error:'Reset Request Loading'" type="is-danger" size="is-large" position="is-left">
+                      <p title="Reset Request Loading" class="stop_request" @click="resetRequestLoading(index)">{{ data.isLoading }}</p>
+                    </b-tooltip>
+                  </td>
+                  <td>
+                    <b-tooltip :type="(data.status === true)? 'is-success':'is-warning'" label="Run Request">
+                      <p @click="resetRequestLoading(index)" style="display: none;"></p>
+                      <b-button class="run_request" :type="(data.status === true)? 'is-success':'is-warning'" icon-left="run" :label="data.totalErrorRequest.toString()" :loading="data.isLoading" @click="runRequestOnData($event, index)"></b-button>
+                    </b-tooltip>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table v-else class="table is-bordered is-fullwidth">
+              <tr>
+                <td class="has-text-centered">
+                  <p class="has-text-danger is-size-3">Not Data Found!</p>
+                  <p class="has-text-link is-size-6 is-family-code">Please go to options page.</p>
                 </td>
               </tr>
-            </tbody>
-          </table>
-          <table v-else class="table is-bordered is-fullwidth">
-            <tr>
-              <td class="has-text-centered">
-                <p class="has-text-danger is-size-3">Not Data Found!</p>
-                <p class="has-text-link is-size-6 is-family-code">Please go to options page.</p>
-              </td>
-            </tr>
-          </table>
+            </table>
+          </div>
+        </div>
+      </b-tab-item>
+
+      <!-- Requst Page Settings -->
+      <b-tab-item label="Settings Request" icon="settings">
+        <div class="container">
+          <nav class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <h3 class="title is-5">Settings</h3>
+              </div>
+            </div>
+            <div class="level-right">
+            </div>
+          </nav>
+          <div class="content">
+            <div class="field">
+              <b-switch v-model="requestPageSettings.isShowErrorRow" type="is-success">
+                Show Request <code>Error</code> Column in <code>Send Request</code> Table.  
+              </b-switch>
+            </div>
+            <div class="field" v-show="requestPageSettings.isShowErrorRow">
+              <b-field v-show="requestPageSettings.isShowErrorRow" horizontal label="Error Object Key">
+                <b-input v-model="requestPageSettings.errorObjKey" placeholder="Enter Error Object Key"></b-input>
+              </b-field>
+            </div>
+          </div> 
         </div>
       </b-tab-item>
     </b-tabs>
@@ -274,6 +317,24 @@ export default {
           line: true,
         },
       },
+
+      // Request Status Data
+      requestStatusData: {
+        totalSaved: 0,
+        // totalErrors: 0
+      },
+
+      // Full Page Loading
+      isFullPageLoading: true,
+
+      // Request Page Settings
+      requestPageSettings: {
+        isShowErrorRow: false,
+        errorObjKey: ""
+      },
+
+      // Hide Request Error Message if click run bulk request
+      isHideRequestErrorMessage: false
     }
   },
   methods: {
@@ -530,7 +591,16 @@ export default {
     /**
      * Run Request
      */
-    runRequestOnData(index) {
+    runRequestOnData(e, index) {
+      
+      // Check: Is Automatic click button or click button with mouse event
+      if (e.x == 0 || e.y == 0) {
+        // Reset Request Error Message Status: true/false
+        this.isHideRequestErrorMessage = true
+      } else {
+        this.isHideRequestErrorMessage = false
+      }
+
       var that = this
       if (Object.keys(this.excelSheetJSONData).length > 0 && this.excelSheetJSONData.obj !== undefined)  {
         if (typeof(this.excelSheetJSONData.obj) === "object" && this.excelSheetJSONData.obj.length > 0) {
@@ -547,6 +617,7 @@ export default {
                 "successMsg": this.request.successMsg,
                 "successStatusCode": this.request.successStatusCode,
                 // "errorMsg": this.request.errorMsg,
+                "method": this.request.type,
               });
               console.log("runRequestOnData -> req", req)
 
@@ -567,6 +638,9 @@ export default {
 
                     // Remove Request Error Object
                     delete this.excelSheetJSONData.obj[index]["request_error"]
+
+                    // Count Successfully Saved Data.
+                    ++this.requestStatusData.totalSaved
                   }
                 },
                 error => {
@@ -577,17 +651,14 @@ export default {
                     var errorMsg = JSON.stringify(error.resp)
                   }
 
-                  // that.$buefy.toast.open({
-                  //   message: errorMsg,
-                  //   position: 'is-bottom',
-                  //   type: 'is-danger'
-                  // })
-
-                  that.$buefy.notification.open({
-                    message: errorMsg,
-                    position: 'is-bottom-left',
-                    type: 'is-danger',
-                  })
+                  // Hide Request Error Message
+                  if (this.isHideRequestErrorMessage === false) {
+                    that.$buefy.notification.open({
+                      message: errorMsg,
+                      position: 'is-bottom-left',
+                      type: 'is-danger',
+                    })
+                  }
 
                   // STOP: Request Loading
                   this.excelSheetJSONData.obj[index].isLoading = false
@@ -624,6 +695,8 @@ export default {
         type: 'is-danger',
         hasIcon: true,
         onConfirm: () => {
+          // Reset Request Error Message Status: true/false
+          this.isHideRequestErrorMessage = false
           $(".run_request.is-warning").click()
         }
       });
@@ -705,15 +778,58 @@ export default {
       },
       deep: true
     },
+
+    // Request Status Data
+    requestStatusData: {
+      handler: function(newObject, oldObj) {
+        this.setValueINExtensionStorage(newObject, "objectVal__requestStatusData");
+      },
+      deep: true
+    },
+
+    // Request Page Settings
+    requestPageSettings: {
+      handler: function(newObject, oldObj) {
+        this.setValueINExtensionStorage(newObject, "objectVal__requestPageSettings");
+      },
+      deep: true
+    },
+  },
+
+  computed: {
+    fetchErrorObjKey: function () {
+      // var vm = this;
+      return function (obj) {
+        try {
+          var is = JSON.parse(obj)
+          if (this.requestPageSettings.errorObjKey !== "") {
+            var isArray = this.requestPageSettings.errorObjKey.split(".")
+            if (isArray.length > 0) {
+              var returnValue = is
+              isArray.forEach(keyName => {
+                returnValue = returnValue[keyName]
+              });
+              return returnValue
+            }
+          }
+          return is
+        } catch (error) {
+          return
+        }
+      };
+   }
   },
 
   created() {
+    this.isFullPageLoading = true
 
     this.setDataINVariable("objectVal__excelSheetKeys", "excelSheetKeys");
     this.setDataINVariable("objectVal__excelSheetJSONData", "excelSheetJSONData");
 
     this.setDataINVariable("objectVal__requestData", "request");
     this.setDataINVariable("objectVal__requestFieldData", "requestFieldData");
+    this.setDataINVariable("objectVal__requestStatusData", "requestStatusData");
+    this.setDataINVariable("objectVal__requestPageSettings", "requestPageSettings");
   },
   mounted() {
     var that = this
@@ -723,6 +839,10 @@ export default {
       if (budget.tabVal2__activeTabIndex != undefined)
         that.activeTabIndex = budget.tabVal2__activeTabIndex;
     });
+
+    setTimeout(() => {
+      this.isFullPageLoading = false
+    }, 2000);
   },
 }
 </script>
