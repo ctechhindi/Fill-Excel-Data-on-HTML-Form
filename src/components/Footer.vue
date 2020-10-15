@@ -11,6 +11,8 @@
             <a target="_blank" href="https://www.youtube.com/channel/UCfd4AN4UKiWyHDdq-fizQGA"><i class="mdi mdi-youtube"></i> YouTube</a>
             <br>
             <a target="_blank" href="https://github.com/ctechhindi"><i class="mdi mdi-git"></i> GitHub</a>
+            <br>
+            <a href="https://www.patreon.com/ctechhindi" target="_blank" rel="noopener noreferrer"><b-icon icon="patreon"></b-icon> Patreon</a>
           </p>
           <div class="bd-footer-tsp">
             Source code licensed

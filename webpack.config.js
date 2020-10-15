@@ -79,6 +79,7 @@ const config = {
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
       { from: 'assets', to: 'assets'},
       { from: 'script', to: 'script'},
+      { from: 'css', to: 'css'},
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
       { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
       { from: 'request/request.html', to: 'request/request.html', transform: transformHtml },

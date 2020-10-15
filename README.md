@@ -14,6 +14,7 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ## 🎬 [Video Tutorial](https://youtu.be/IV6yMHf2rNo)
 
+## [Documentation](Documentation.md)
 
 ## Screenshot
 
@@ -126,6 +127,38 @@ try {
   ```
   {"readyState":0,"responseText":"","status":0,"statusText":"error"}
   ```
+* Key not link to the submit button `https://ioclmaruticampaign.in/?ROiD=133953`
+
+
+### V.0.1.1
+
+* `NEW: ` Trigger Javascript Event in the Form Field
+  * "click",
+  * "dblclick",
+  * "change",
+  * "copy",
+  * "cut",
+  * "paste",
+  * "submit",
+  * "focus",
+  * "focusin",
+  * "focusout",
+  * "mousedown",
+  * "mouseenter",
+  * "mouseleave",
+  * "mousemove",
+  * "mouseup",
+  * "mouseover",
+  * "mouseout",
+  * "input",
+  * "keydown",
+  * "keypress",
+  * "keyup",
+  * "load",
+  * "unload"
+* `FIXED: ` If insert second form url and then delete second form url then showing error
+* `NEW: ` Add Option in the Chrome `Right Option Menu`, Copy Field Address
+  * ![Copy Field Address](./screenshot/copy-element-selector.png)
 
 ### V.0.1.0
 

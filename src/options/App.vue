@@ -406,7 +406,7 @@
             <li><a href="https://youtu.be/IV6yMHf2rNo" target="_blank" rel="noopener noreferrer"><b-icon icon="youtube"></b-icon> Tutorial (Hindi) with English Subtitle</a></li>
             <li><a href="https://bit.ly/3lONmlS" target="_blank" rel="noopener noreferrer"><b-icon icon="git"></b-icon> GitHub</a></li>
             <li><a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form/blob/master/Documentation.md" target="_blank" rel="noopener noreferrer"><b-icon icon="information"></b-icon> Documentation</a></li>
-            <li><a href="https://bit.ly/3lONmlS" target="_blank" rel="noopener noreferrer"><b-icon icon="git"></b-icon> GitHub</a></li>
+            <li><a href="https://www.patreon.com/ctechhindi" target="_blank" rel="noopener noreferrer"><b-icon icon="patreon"></b-icon> Patreon</a></li>
           </ul>
         </div>
       </b-tab-item>
@@ -532,6 +532,17 @@
           <!-- Field: Select Option with RegExp -->
           <b-field label="If you want to match the excel data with this form field data then turn on RegExp." v-if="(['select', 'multiple', 'radio', 'checkbox'].indexOf(colSettings.field_type) !== -1)">
             <b-checkbox v-model="colSettings.check_value_with_regexp">Search Data with RegExp</b-checkbox>
+          </b-field>
+
+          <!-- Trigger Javascript Event  -->
+          <b-field v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+            <p class="control">
+              <b-checkbox-button v-model="colSettings.isRunEvent" :native-value="true" type="is-dark">
+                <b-icon icon="calendar-text"></b-icon>
+                <span style="padding-right: 38px;">&nbsp; Events</span>
+              </b-checkbox-button>
+            </p>
+            <b-taginput v-show="colSettings.isRunEvent" @typing="getFilteredEvents" v-model="colSettings.js_events" :data="javascriptEventList" :open-on-focus="true" type="is-dark" style="width: 100%;" dropdown-position="top" placeholder="Search and Select Event" autocomplete></b-taginput>
           </b-field>
 
           <!-- Pre-Define Keys -->
@@ -660,7 +671,13 @@ export default {
         action_name: "",
         // Action Value
         action_value: "",
+        // Js Event for Key
+        isRunEvent: false,
+        js_events: [], // Events Names
       },
+      // Javascript Events
+      javascriptEventList: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
+      javascriptEventListFilter: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
     };
   },
   methods: {
@@ -1214,6 +1231,8 @@ export default {
         hasIcon: true,
         onConfirm: () => {
           if (this.allActionSite[index] !== undefined) {
+            // First Reset Active Site Selected Index Key
+            this.selectActionSite = 0
             this.$delete(this.allActionSite, index);
             // Site Excel Columns
             this.$delete(this.siteExcelColumns, index);
@@ -1248,6 +1267,9 @@ export default {
         // Action
         this.colSettings.action_name = colData.settings.action_name
         this.colSettings.action_value = colData.settings.action_value
+        // Js Events
+        this.colSettings.isRunEvent = colData.settings.isRunEvent
+        this.colSettings.js_events = colData.settings.js_events
         
         // Open Column Settings Model
         this.isOpenSiteColSettingsModel = true
@@ -1281,6 +1303,9 @@ export default {
         // Action
         this.$set(colData.settings, 'action_name', this.colSettings.action_name)
         this.$set(colData.settings, 'action_value', this.colSettings.action_value)
+        // Js Events
+        this.$set(colData.settings, 'isRunEvent', this.colSettings.isRunEvent)
+        this.$set(colData.settings, 'js_events', this.colSettings.js_events)
 
         this.$buefy.toast.open({
           message: `Column Settings has been successfully Saved. `,
@@ -1293,6 +1318,15 @@ export default {
         // Set Active Column Name
         this.activeSiteColName = null
       }
+    },
+
+    /**
+     * Get/Filter Key Event Names
+     */
+    getFilteredEvents(text) {
+      this.javascriptEventList = this.javascriptEventListFilter.filter((option) => {
+        return option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0
+      });
     },
 
     /**______________ Convert Data _______________ */

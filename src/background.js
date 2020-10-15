@@ -64,3 +64,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     });
   }
 });
+
+/**
+ * Copy Field Address
+ */
+function onCopyElement(info, tab) {
+  chrome.tabs.sendMessage(tab.id, { target: "copyFieldAddress" });
+};
+
+chrome.contextMenus.create({
+  id: "copyFieldAddress",
+  title: "Copy Field Address",
+  contexts: ["all"]
+});
+
+chrome.contextMenus.onClicked.addListener(onCopyElement)
