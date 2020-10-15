@@ -337,7 +337,7 @@
         </div>
       </b-tab-item>
 
-      <!-- Data -->
+      <!-- Excel Data -->
       <b-tab-item label="Excel Data" icon="database">
         <div class="container">
           <!-- Excel Sheet Data -->
@@ -395,6 +395,19 @@
               </td>
             </tr>
           </table>
+        </div>
+      </b-tab-item>
+
+      <!-- About Us -->
+      <b-tab-item label="About Us" icon="information">
+        <div class="container">
+          <h1 class="title is-5">Fill Excel Data in the Online Forms</h1>
+          <ul>
+            <li><a href="https://youtu.be/IV6yMHf2rNo" target="_blank" rel="noopener noreferrer"><b-icon icon="youtube"></b-icon> Tutorial (Hindi) with English Subtitle</a></li>
+            <li><a href="https://bit.ly/3lONmlS" target="_blank" rel="noopener noreferrer"><b-icon icon="git"></b-icon> GitHub</a></li>
+            <li><a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form/blob/master/Documentation.md" target="_blank" rel="noopener noreferrer"><b-icon icon="information"></b-icon> Documentation</a></li>
+            <li><a href="https://bit.ly/3lONmlS" target="_blank" rel="noopener noreferrer"><b-icon icon="git"></b-icon> GitHub</a></li>
+          </ul>
         </div>
       </b-tab-item>
     </b-tabs>
@@ -577,7 +590,7 @@ export default {
        */
       preDefineKey: [ "fill_action", "page_loaded", "form_filled", "entry_saved", "status", "isLoading", "totalErrorRequest"],
       // Active Tab Index
-      activeTabIndex: 0,
+      activeTabIndex: 3,
       // Excel Sheet Data
       excelSheetData: "",
       // Excel Date Format Output

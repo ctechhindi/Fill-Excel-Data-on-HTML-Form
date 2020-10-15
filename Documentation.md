@@ -8,7 +8,7 @@
 
 ### `Checkbox`
 
-![Checkbox](screenshot/checkbox.png)
+![Checkbox](screenshot/checkbox.PNG)
 
 #### ***Types of Methods for Select Checkbox in the HTML Form***
 
@@ -56,7 +56,7 @@
 
 ### `Radio`
 
-![Checkbox](screenshot/radio.png)
+![Checkbox](screenshot/radio.PNG)
 
 #### ***Create only one column for all checkboxes in Excel sheet, like this.***
 
