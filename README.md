@@ -1,4 +1,4 @@
-# Fill Excel Sheet Data into HTML Form
+# Fill Excel Sheet Data into HTML Online Forms
 
 Fill data in HTML form with Excel sheet from Chrome Extension.
 
@@ -12,7 +12,7 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
 
-## 🎬 [Video Tutorial](https://www.youtube.com/watch?v=i4yHrVASRh4&t=5s)
+## 🎬 [Video Tutorial](https://youtu.be/IV6yMHf2rNo)
 
 
 ## Screenshot
@@ -48,7 +48,7 @@ npm run build-zip
 
 ```
 <!-- Delete dist folder then run this commands -->
-npm run watch
+npm run build
 npm run build-zip
 ```
 
@@ -56,21 +56,6 @@ npm run build-zip
 
 * [vue-codemirror](https://github.com/surmon-china/vue-codemirror)
 * [SelectorGenerator](https://github.com/flamencist/SelectorGenerator)
-
-## Keys Custom JS Script [Option Page]
-
-Global Variable in the Key's Custom JS Script.
-
-```js
-// Current Active JSON Data
-console.log(FillAPP.cData);
-
-// Current Active Key Name
-console.log(FillAPP.cKeyName);
-
-// Fetch Current Active Key Details
-console.log(FillAPP.htmlKeys[FillAPP.cKeyName]);
-```
 
 ## Keys Custom JS Script [Request Page]
 
@@ -123,19 +108,6 @@ try {
 }
 ```
 
-## Predefined Custom Keys
-
-* `fill_action` : If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
-  ```js
-  // With this, when you click on this HTML Element, only your Form Feed will start.
-  document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
-  ```
-* `page_loaded` : After the page is fully loaded, you can give your Custom Script.
-* `form_filled` : After the form is successful feeded, you can give what script you want to run.
-* `form_submit` : After the form is successful submit, you can give what script you want to run.
-* `status`
-* `isLoading`
-* `totalErrorRequest`
 
 ## 🚫 Errors
 
@@ -155,6 +127,12 @@ try {
   {"readyState":0,"responseText":"","status":0,"statusText":"error"}
   ```
 
+### V.0.0.9
+
+* `BIG CHANGE: ` Insert Multiple Action Site
+* `FIXED: ` Success Message not working in the different domain
+* About Video: https://youtu.be/IV6yMHf2rNo
+
 ### V.0.0.8
 
 * Full Page Loading in the `Request Send Page`.
@@ -163,7 +141,7 @@ try {
 * Hide Request Error Message if run bulk entry in the `Request Send Page`.
 * Show and Hide Request Error Response Data in the `Request Send Page`.
 * Show request error if mouseover request status table row in the `Request Send Page`. 
-  * ![](screenshot\update\request_error.png)
+  * ![](screenshot/update/request_error.png)
 
 ### V.0.0.7
 

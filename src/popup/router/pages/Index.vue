@@ -1,29 +1,33 @@
 <template>
   <div class="popup">
     <div class="container" style="margin: 10px;">
-      <nav class="level">
+      <nav class="level" style="margin-top: 25px;">
         <div class="level-left">
           <div class="level-item">
-            <h3 class="title is-5">HTML Form Field's Identity</h3>
+            <span>
+              <h3 class="title is-5">HTML Form Field's Identity</h3>
+              <p>Here you can choose which column of Excel data will go in which field of the form.</p>
+            </span>
           </div>
         </div>
         <div class="level-right"></div>
       </nav>
+      <hr />
       <table
         class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-        v-show="Object.keys(excelSheetKeys).length > 0"
+        v-if="allActionSite.length > 0 && selectActionSite !== null"
       >
         <thead>
-          <th></th>
-          <th>Key</th>
-          <th>Element Type</th>
-          <th>Action Element</th>
+          <th>Select</th>
+          <th title="Excel Column Name">Excel Column</th>
+          <th>Field Type</th>
+          <th>Field Address</th>
         </thead>
         <tbody>
-          <tr v-for="(data, index) in excelSheetKeys" :key="index">
+          <tr v-for="(data, index) in siteExcelColumns[selectActionSite]" :key="index">
             <td title="Inspect">
               <a @click="inspect(index)">
-                <i class="mdi mdi-link"></i>
+                <i class="mdi mdi-cursor-default"></i>
               </a>
             </td>
             <td>{{ index }}</td>
@@ -47,6 +51,23 @@
           </tr>
         </tbody>
       </table>
+      <table v-else>
+        <tr>
+          <th style="color: red;">
+            <h3>No Data Found!</h3>
+            <p>Please First Upload Excel Data in the Option Page.</p>
+            <p v-if="selectActionSite === null">Action site not match this site url.</p>
+          </th>
+        </tr>
+      </table>
+      <ul>
+        <li>
+          <a @click="showDropdownBoxValue_Request"># Show the drop-down value because by this we can select the drop-down option.</a>
+        </li>
+        <li>
+          <a @click="showCheckBoxValue_Request"># Show the checkbox value because by this we can select the checkbox.</a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -56,8 +77,12 @@ export default {
   name: "Popup",
   data() {
     return {
-      // Excel Sheet Keys
-      excelSheetKeys: {},
+      // All Action Site
+      allActionSite: [],
+      // Select Action Site
+      selectActionSite: null,
+      // Site Columns
+      siteExcelColumns: [],
       // Active Tab Data
       activeTab: {
         id: "",
@@ -125,9 +150,72 @@ export default {
         var e = c[d].split("=");
         if (decodeURIComponent(e[0]) === "url") {
           this.activeTab.url = decodeURIComponent(e[1]);
+          // check this url in the `allActionSite`
+          this.checkURLInActionSite()
         } else if (decodeURIComponent(e[0]) === "tabid") {
           this.activeTab.id = parseInt(e[1]);
         }
+      }
+    },
+
+    /**
+     * Check Active URL in the `allActionSite`
+     */
+    checkURLInActionSite() {
+      try {
+        var url = new URL(this.activeTab.url)
+
+        // Check All Action Site Data Found
+        if (this.allActionSite.length > 0) {
+          for (let index = 0; index < this.allActionSite.length; index++) {
+            const item = this.allActionSite[index];
+            if (!item.site || !item.siteType) { continue }
+
+            // Check Active URL Match 
+            if (item.siteType === "fullPath") { // "fullPath", "pathName"
+              if (url.href === item.site) {
+                this.selectActionSite = index
+                break
+              } else { continue }
+            } else if (item.siteType === "pathName") {
+              if (url.pathname === item.site) {
+                this.selectActionSite = index
+                break
+              } else { continue }
+            } else {
+              continue
+            }
+          }
+
+          // Check this tab url match in the action url `successPage` Page
+          for (let index2 = 0; index2 < this.allActionSite.length; index2++) {
+            const page = this.allActionSite[index2];
+            if (!page.successPage || !page.successTPageype) { continue }
+
+            // Check Active URL Match 
+            if (page.successTPageype === "fullPath") { // "fullPath", "pathName"
+              if (url.href === page.successPage) {
+                this.selectActionSite = index2
+                break
+              } else { continue }
+            } else if (page.successTPageype === "pathName") {
+              if (url.pathname === page.successPage) {
+                this.selectActionSite = index2
+                break
+              } else { continue }
+            } else {
+              continue
+            }
+          }
+          console.log("checkURLInActionSite -> this.selectActionSite", this.selectActionSite)
+        }
+
+      } catch (error) {
+        that.$buefy.toast.open({
+          message: error,
+          position: "is-bottom",
+          type: "is-danger"
+        });
       }
     },
 
@@ -136,14 +224,9 @@ export default {
      */
     inspect(index) {
       var that = this;
-      // console.log("inspect -> this.activeTab", this.activeTab)
 
       // Check Tab Id is Valid
-      if (
-        this.activeTab.id === undefined ||
-        this.activeTab.id === null ||
-        this.activeTab.id === ""
-      ) {
+      if (!this.activeTab.id) {
         return console.error("Tab ID Invalid.");
       }
 
@@ -156,23 +239,16 @@ export default {
           { action: "getElementIdentity", keyIndex: index },
           function(resp) {
             if (chrome.runtime.lastError) {
-              console.error(
-                "inspect -> chrome.runtime.lastError",
-                chrome.runtime.lastError.message
-              );
+              console.error("inspect -> chrome.runtime.lastError", chrome.runtime.lastError.message);
               that.$buefy.toast.open({
-                message: chrome.runtime.lastError.message,
+                message: "Please Reload Form Site.",
                 position: "is-bottom",
                 type: "is-danger"
               });
             } else {
               if (resp) {
-                if (
-                  resp.excelKey === undefined ||
-                  resp.excelKey === null ||
-                  resp.excelKey === ""
-                ) {
-                  return console.error("Excel Key Not Found!");
+                if (!resp.excelKey) {
+                  return console.error(" Column Key Not Found!");
                 }
 
                 /**
@@ -180,12 +256,12 @@ export default {
                  */
                 if (resp.id !== undefined && resp.id !== "") {
                   // Update Excel Sheet Data
-                  that.excelSheetKeys[resp.excelKey].element_type = "id";
-                  if (that.excelSheetKeys[resp.excelKey].element === "") {
-                    that.excelSheetKeys[resp.excelKey].element = resp.id;
+                  that.siteExcelColumns[that.selectActionSite][resp.excelKey].element_type = "id";
+                  if (that.siteExcelColumns[that.selectActionSite][resp.excelKey].element === "") {
+                    that.siteExcelColumns[that.selectActionSite][resp.excelKey].element = resp.id;
                   } else {
-                    that.excelSheetKeys[resp.excelKey].element =
-                      that.excelSheetKeys[resp.excelKey].element +
+                    that.siteExcelColumns[that.selectActionSite][resp.excelKey].element =
+                      that.siteExcelColumns[that.selectActionSite][resp.excelKey].element +
                       "," +
                       resp.id;
                   }
@@ -196,19 +272,106 @@ export default {
                  */
                 if (resp.querySelector) {
                   // Update Excel Sheet Data
-                  that.excelSheetKeys[resp.excelKey].element_type =
+                  that.siteExcelColumns[that.selectActionSite][resp.excelKey].element_type =
                     "querySelector";
-                  if (that.excelSheetKeys[resp.excelKey].element === "") {
-                    that.excelSheetKeys[resp.excelKey].element =
+                  if (that.siteExcelColumns[that.selectActionSite][resp.excelKey].element === "") {
+                    that.siteExcelColumns[that.selectActionSite][resp.excelKey].element =
                       resp.querySelector;
                   } else {
-                    that.excelSheetKeys[resp.excelKey].element =
-                      that.excelSheetKeys[resp.excelKey].element +
+                    that.siteExcelColumns[that.selectActionSite][resp.excelKey].element =
+                      that.siteExcelColumns[that.selectActionSite][resp.excelKey].element +
                       "," +
                       resp.querySelector;
                   }
                 }
+
+                // TODO: Get Tab Id: Popup Window and Focus Tab
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                  var currTab = tabs[0];
+                  if (currTab) {
+                    console.log("inspect -> currTab", currTab)
+                    chrome.tabs.update(currTab.id, {selected: true});
+                  }
+                });
+
+                that.$buefy.toast.open({
+                  message: "Form field address has been catched.",
+                  position: "is-bottom",
+                  type: "is-success"
+                });
               }
+            }
+          }
+        );
+      } catch (error) {
+        console.error("inspect -> error", error);
+        that.$buefy.toast.open({
+          message: error,
+          position: "is-bottom",
+          type: "is-danger"
+        });
+      }
+    },
+
+    /**
+     * Show Checkbox Value in the Form Page
+     */
+    showCheckBoxValue_Request() {
+      var that = this;
+
+      if (!this.activeTab.id) {
+        return console.error("Tab ID Invalid.");
+      }
+
+      try {
+        chrome.tabs.sendRequest(
+          this.activeTab.id, { action: "showCheckboxValue"},
+          function(resp) {
+            if (chrome.runtime.lastError) {
+              console.error("inspect -> chrome.runtime.lastError", chrome.runtime.lastError.message);
+              that.$buefy.toast.open({
+                message: "Please Reload Form Site.",
+                position: "is-bottom",
+                type: "is-danger"
+              });
+            } else {
+            }
+          }
+        );
+      } catch (error) {
+        console.error("inspect -> error", error);
+        that.$buefy.toast.open({
+          message: error,
+          position: "is-bottom",
+          type: "is-danger"
+        });
+      }
+    },
+
+    /**
+     * Show Drop-down Box Value in the Form Page
+     * 1. change select to ul list
+     * 2. download name and value list in the excel sheet
+     */
+    showDropdownBoxValue_Request() {
+      var that = this;
+
+      if (!this.activeTab.id) {
+        return console.error("Tab ID Invalid.");
+      }
+
+      try {
+        chrome.tabs.sendRequest(
+          this.activeTab.id, { action: "showSelectBoxValue"},
+          function(resp) {
+            if (chrome.runtime.lastError) {
+              console.error("inspect -> chrome.runtime.lastError", chrome.runtime.lastError.message);
+              that.$buefy.toast.open({
+                message: "Please Reload Form Site.",
+                position: "is-bottom",
+                type: "is-danger"
+              });
+            } else {
             }
           }
         );
@@ -223,18 +386,30 @@ export default {
     }
   },
   watch: {
-    excelSheetKeys: {
+    siteExcelColumns: {
       handler: function(newObject) {
-        this.setValueINExtensionStorage(newObject, "objectVal__excelSheetKeys");
+        this.setValueINExtensionStorage(newObject, "objectVal__siteExcelColumns");
       },
       deep: true
-    }
-  },
-  created() {
-    this.setDataINVariable("objectVal__excelSheetKeys", "excelSheetKeys");
+    },
 
-    // {@call}
-    this.fetchActiveTabData();
+    // Action All Site
+    allActionSite: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(newObject, "objectVal__allActionSite");
+      },
+      deep: true,
+    },
+  },
+  async created() {
+    await this.setDataINVariable("objectVal__siteExcelColumns", "siteExcelColumns");
+    var out = await this.setDataINVariable("objectVal__allActionSite", "allActionSite");
+    if (out.status === true) {
+      if (out.data !== undefined && out.data.length > 0) {
+        // {@call}
+        this.fetchActiveTabData();
+      }
+    }
   },
   mounted() {}
 };

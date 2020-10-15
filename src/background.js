@@ -6,53 +6,29 @@ chrome.browserAction.onClicked.addListener(function (a) {
   });
 
   // Parse: Table ID and URL
-  window.open(chrome.extension.getURL("popup/popup.html?tabid=" + encodeURIComponent(a.id) + "&url=" + encodeURIComponent(a.url)), "Excel Fill", "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=720,height=650")
+  window.open(chrome.extension.getURL("popup/popup.html?tabid=" + encodeURIComponent(a.id) + "&url=" + encodeURIComponent(a.url)), "Excel Fill", "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=660,height=1040,top=0,left=960")
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
 
-    // Action Chrome Key
-    var actionURLKey = "objectVal__actionURL";
-    // Keys and Element ID Data
-    var keysElement = "objectVal__excelSheetKeys";
+    // Action Page Settings
+    var actionURLs = "objectVal__allActionSite";
+    // Site Excel Columns
+    var siteColumns = "objectVal__siteExcelColumns";
     // Excel JSON Data
     var excelJSONData = "objectVal__excelSheetJSONData";
 
     // Get Data
-    chrome.storage.local.get([actionURLKey, excelJSONData, keysElement], function (k) {
-      if (k[actionURLKey] !== undefined && k[actionURLKey] !== null) {
-        var url = k[actionURLKey];
-        if (url.action !== undefined && url.action !== "") {
+    chrome.storage.local.get([actionURLs, excelJSONData, siteColumns], function (k) {
+      if (k[actionURLs] !== undefined && k[actionURLs] !== null) {
+        var url = k[actionURLs];
+        if (url !== null && url.length > 0) {
+          // console.log("Tab Option: ", tab)
+          // console.log("Action URLs", url)
 
-          console.log("Tab Option: ", tab)
-
-          /**
-           * TODO: Check Page Path
-           * -------------------
-           * fullPath, pathName
-           */
-          // if (url.actionType === "fullPath") {
-          //   if (tab.url !== url.action || tab.url !== url.success) {
-          //     console.error("FULL Path Not Match", url);
-          //     return
-          //   }
-          // } else if (url.actionType === "pathName") {
-          //   var tabURLData = new URL(tab.url);
-          //   if (tabURLData.pathname !== url.action) {
-          //     console.error("Path Name Not Match", url);
-          //     return
-          //   }
-          // } else {
-          //   return
-          // }
-
-          // console.log("url.actionType", url.actionType)
-          // console.log("excel json data", k[excelJSONData])
-          // console.log("keys data", k[keysElement])
-
-          // Keys
-          if (k[keysElement] !== undefined && k[keysElement] !== null && Object.keys(k[keysElement]).length > 0) {
+          // Site Excel Column Data
+          if (k[siteColumns] !== undefined && k[siteColumns] !== null && siteColumns.length > 0) {
             // Excel JSON Data
             if (k[excelJSONData] !== undefined && k[excelJSONData] !== null && Object.keys(k[excelJSONData]).length > 0) {
               var excelJSONObj = k[excelJSONData];
@@ -76,7 +52,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             }
 
           } else {
-            console.error("Keys and Element ID Data Not Found!");
+            console.error("Action Site Excel Columns Data Not Found.");
           }
 
         } else {

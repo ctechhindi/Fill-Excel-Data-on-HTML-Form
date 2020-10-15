@@ -10,7 +10,10 @@
             <!-- Excel Date Format Output -->
             <b-tooltip label="Default Format: yyyy-mm-dd" style="width: 100%;">
               <b-field label="Excel Date Format Output" expanded>
-                <b-input v-model="excelFileSettings.dateFormat" placeholder="Enter Excel Date Format Output"></b-input>
+                <b-input
+                  v-model="excelFileSettings.dateFormat"
+                  placeholder="Enter Excel Date Format Output"
+                ></b-input>
               </b-field>
             </b-tooltip>
           </b-field>
@@ -32,7 +35,11 @@
                   </div>
                   <div class="level-right">
                     <p class="level-item">
-                      <a target="_blank" href="../script/demo-excel-data.xlsx" class="button is-info">
+                      <a
+                        target="_blank"
+                        href="../script/demo-excel-data.xlsx"
+                        class="button is-info"
+                      >
                         <b-icon icon="file-excel"></b-icon>
                         <span>&nbsp;Excel Sample File</span>
                       </a>
@@ -64,13 +71,18 @@
                   <h3>Output</h3>
                   <div id="json-container"></div>
                   <div class="demo-options" style="margin-top: 10px;">
-                    <button @click="jsonDataExpanAll()" class="button is-primary is-small">Expand All</button>
-                    <button @click="jsonDataCollapseAll()" class="button is-success is-small">
-                      Collapse All
-                    </button>
-                    <button @click="jsonDataExpanLevels()" class="button is-danger is-small">
-                      Expand Levels
-                    </button>
+                    <button
+                      @click="jsonDataExpanAll()"
+                      class="button is-primary is-small"
+                    >Expand All</button>
+                    <button
+                      @click="jsonDataCollapseAll()"
+                      class="button is-success is-small"
+                    >Collapse All</button>
+                    <button
+                      @click="jsonDataExpanLevels()"
+                      class="button is-danger is-small"
+                    >Expand Levels</button>
                     Levels:
                     <input type="text" id="levels" value="1" />
                   </div>
@@ -80,168 +92,248 @@
           </b-collapse>
         </div>
       </b-tab-item>
-      <!-- Application Settings -->
-      <b-tab-item label="Settings" icon="settings">
+
+      <!-- Page Settings -->
+      <b-tab-item label="Page Settings" icon="settings">
         <div class="container">
-          <b-field grouped>
-            <!-- Action URL Type -->
-            <b-field label="Action URL Type" expanded>
-              <b-select placeholder="Select a url type" v-model="url.actionType" @input="changeActionURLType" expanded>
-                <option value="fullPath">Full Path</option>
-                <option value="pathName">location.pathname</option>
-              </b-select>
-            </b-field>
-            <!-- Action URL -->
-            <b-field label="Action URL" expanded>
-              <b-input v-model="url.action" placeholder="Enter Action URL"></b-input>
-            </b-field>
-            <!-- Error URL -->
-            <!-- <b-field label="Error URL" expanded>
-              <b-input v-model="url.error" placeholder="Enter Error URL"></b-input>
-            </b-field> -->
-          </b-field>
 
-          <b-field grouped>
-            <!-- Success URL Type -->
-            <b-field label="Success URL Type" expanded>
-              <b-select placeholder="Select a url type" v-model="url.successType" @input="changeSuccessURLType" expanded>
-                <option value="fullPath">Full Path</option>
-                <option value="pathName">location.pathname</option>
-              </b-select>
-            </b-field>
-            <!-- Success URL -->
-            <b-field label="Success URL" expanded>
-              <b-input v-model="url.success" placeholder="Enter Success URL"></b-input>
-            </b-field>
-            <!-- Success URL: Message -->
-            <b-field label="Success Message" expanded>
-              <b-input v-model="url.successMsg" placeholder="Enter Success Message"></b-input>
-            </b-field>
-          </b-field>
-
-          <!-- Excel Sheet Keys Data -->
+          <!-- Insert New Site -->
           <nav class="level">
             <div class="level-left">
               <div class="level-item">
-                <h3 class="title is-5">Excel Sheet Keys</h3>
+                <h3 class="title is-5">Form Site</h3>
               </div>
             </div>
             <div class="level-right">
-              <b-tooltip label="Fetch Key from Excel Data">
-                <b-button type="is-info" icon-left="key" @click="fetchKeysInExcelData"></b-button>
-              </b-tooltip>&nbsp;
-              <b-tooltip label="Insert New Key">
-                <b-button type="is-success" icon-left="plus" @click="insertNewKey"></b-button>
-              </b-tooltip>&nbsp;
-              <b-tooltip label="Clear All Keys Data" type="is-danger">
-                <b-button type="is-danger" icon-left="delete" @click="deleteKeysData"></b-button>
+              <b-tooltip label="Insert New Site">
+                <!-- Add New Site  -->
+                <b-button
+                  type="is-success"
+                  icon-left="plus"
+                  @click="isOpenNewSiteModel = true"
+                >Insert Site</b-button>
+              </b-tooltip>&nbsp;|&nbsp;
+              <a id="exportKeysDataHref" style="display:none"></a>
+              <b-tooltip label="Export Page Settings Data" type="is-dark" v-if="allActionSite.length > 0">
+                <b-button type="is-dark" icon-left="file-export" @click="exportPageSettingsData">Export</b-button>
               </b-tooltip>
-              &nbsp;|&nbsp;
-              <b-tooltip label="Import Key's Data" type="is-primary">
-                <b-upload v-model="importKeyJSONFile" :required="true" @input="importKeyData">
+              &nbsp;
+              <b-tooltip label="Import Page Settings Data" type="is-primary">
+                <b-upload v-model="importPageSettingsJSONFile" :required="true" @input="importPageSettingsData">
                   <a class="button is-primary">
                     <b-icon icon="file-import"></b-icon>
                     <span>Import</span>
                   </a>
                 </b-upload>
-              </b-tooltip>&nbsp;
-              <a id="exportKeysDataHref" style="display:none"></a>
-              <b-tooltip label="Export Key's Data" type="is-dark">
-                <b-button type="is-dark" icon-left="file-export" @click="exportKeyData">Export</b-button>
               </b-tooltip>
             </div>
           </nav>
-          <table class="table is-bordered is-narrow is-hoverable is-fullwidth" v-show="Object.keys(excelSheetKeys).length > 0">
+
+          <!-- Show All Site -->
+          <table class="table is-bordered is-narrow is-hoverable is-fullwidth" v-if="allActionSite.length > 0">
             <thead>
-              <th>ON/OFF</th>
-              <th>
-                <b-tooltip label="Table Header Names in Excel Sheet" position="is-right">
-                  Key
-                </b-tooltip>
-              </th>
-              <th>Element Type</th>
-              <th>Action Element</th>
-              <th>RUN Script</th>
-              <th>Action</th>
+              <th>Select</th>
+              <th>Site</th>
+              <th>Success Page</th>
+              <th>Success Message</th>
+              <th style="width: 130px; text-align: center;">Action</th>
             </thead>
             <tbody>
-              <tr v-for="(data, index) in excelSheetKeys" :key="index">
-                <td style="width: 130px;">
+              <tr v-for="(data, index) in allActionSite" :key="index">
+                <td>
                   <div class="field">
-                    <b-switch v-model="data.is_active" type="is-success">
-                      {{ (data.is_active === true)? "ON":"OFF" }}
-                    </b-switch>
+                    <b-radio v-model="selectActionSite" :native-value="index" type="is-success"></b-radio>
                   </div>
                 </td>
-                <td>
-                  <span v-if="index === 'form_filled'" title="After the form is successful feeded, you can give what script you want to run."><code>{{ index }}</code></span>
-                  <span v-else-if="index === 'form_submit'" title="After the form is successful submit, you can give what script you want to run."><code>{{ index }}</code></span>
-                  <span v-else-if="index === 'page_loaded'" title="After the page is fully loaded, you can give your Custom Script."><code>{{ index }}</code></span>
-                  <span v-else-if="index === 'fill_action'" title="If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page."><code>{{ index }}</code></span>
-                  <span v-else>{{ index }}</span>
-                </td>
-                <td style="width: 250px;">
-                  <b-field v-if="['form_filled', 'form_submit', 'page_loaded'].indexOf(index) < 0">
-                    <b-select v-model="data.element_type" placeholder="Select element type" expanded>
-                      <option value="id">ID</option>
-                      <!-- <option value="class">Class</option> -->
-                      <option value="querySelector">document.querySelector()</option>
-                    </b-select>
-                  </b-field>
-                </td>
-                <td>
-                  <b-field>
-                    <b-input v-if="['form_filled', 'form_submit', 'page_loaded'].indexOf(index) < 0" v-model="data.element" placeholder="Enter element"></b-input>
-                  </b-field>
-                  <b-tooltip v-if="index === 'fill_action'" label="Set HTML Element Event Type" position="is-top">
-                    <b-field>
-                      <b-select v-model="data.event_type" placeholder="Select element type" expanded>
-                        <option value="click">click</option>
-                        <option value="focus">focus</option>
-                        <option value="change">change</option>
-                        <option value="dblclick">dblclick</option>
-                        <option value="copy">copy</option>
-                        <option value="cut">cut</option>
-                        <option value="paste">paste</option>
-                        <option value="submit">submit</option>
-                        <option value="focusin">focusin</option>
-                        <option value="focusout">focusout</option>
-                        <option value="mousedown">mousedown</option>
-                        <option value="mouseenter">mouseenter</option>
-                        <option value="mouseleave">mouseleave</option>
-                        <option value="mousemove">mousemove</option>
-                        <option value="mouseup">mouseup</option>
-                        <option value="mouseover">mouseover</option>
-                        <option value="mouseout">mouseout</option>
-                        <option value="input">input</option>
-                        <option value="keydown">keydown</option>
-                        <option value="keypress">keypress</option>
-                        <option value="keyup">keyup</option>
-                        <option value="load">load</option>
-                        <option value="unload">unload</option>
-                        <option value="force">force</option>
-                      </b-select>
-                    </b-field>
+                <td style="font-size: small;">
+                  <b-tooltip :label="'Site Type: '+ data.siteType">
+                    {{ data.site }}
                   </b-tooltip>
                 </td>
-                <td style="width: 120px;">
-                  <div class="field">
-                    <b-switch v-model="data.is_runJScript" type="is-success">
-                      {{ (data.is_runJScript === true)? "Yes":"No" }}
-                    </b-switch>
-                  </div>
-                </td>
-                <td style="width: 120px;">
-                  <b-tooltip :type="(data.is_runJScript == true)? 'is-success':'is-warning'" label="Insert JS Script">
-                    <b-button :type="(data.is_runJScript == true)? 'is-success':'is-warning'" icon-left="nodejs" @click="openScriptModel(index)"></b-button>
-                  </b-tooltip>&nbsp;
-                  <b-tooltip type="is-danger" label="Delete Key">
-                    <b-button type="is-danger" icon-left="delete" @click="deleteKeyData(index)"></b-button>
+                <td style="font-size: small;">
+                  <b-tooltip :label="'Site Type: '+ data.successTPageype">
+                    {{ data.successPage }}
                   </b-tooltip>
+                </td>
+                <td style="font-size: small;">{{ data.successMsg }}</td>
+                <td style="text-align: right;">
+                  <b-button type="is-info" title="Edit Site Information" icon-left="pencil" @click="editSiteInformation(index)"></b-button>
+                  <b-button type="is-danger" title="Delete Site Information" icon-left="delete" @click="deleteSiteInformation(index)"></b-button>
                 </td>
               </tr>
             </tbody>
           </table>
+
+          <!-- Excel Sheet Column Data -->
+          <div v-if="allActionSite.length > 0" style="padding-top: 35px;">
+            <nav class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <h3 class="title is-5">Selected Site Excel Sheet Column</h3>
+                </div>
+              </div>
+              <div class="level-right">
+                <b-tooltip label="Fetch Column from Excel Data">
+                  <b-button type="is-info" icon-left="key" @click="fetchColInExcelData"></b-button>
+                </b-tooltip>&nbsp;
+                <b-tooltip label="Insert New Column">
+                  <b-button type="is-success" icon-left="plus" @click="insertNewColumn"></b-button>
+                </b-tooltip>&nbsp;|&nbsp;
+                <b-tooltip label="Clear All Column Data" type="is-danger">
+                  <b-button type="is-danger" icon-left="delete" @click="clearSiteColumnData">Clear Colums</b-button>
+                </b-tooltip>&nbsp;
+              </div>
+            </nav>
+            <table
+              class="table is-bordered is-narrow is-hoverable is-fullwidth"
+              v-show="siteExcelColumns.length > 0"
+            >
+              <thead v-if="Object.keys(siteExcelColumns[selectActionSite]).length > 0">
+                <th>ON/OFF</th>
+                <th>
+                  <b-tooltip label="Table Header Names in Excel Sheet" position="is-right">Excel Column</b-tooltip>
+                </th>
+                <th>Field Type</th>
+                <th>Field Element</th>
+                <th>RUN Script</th>
+                <th style="text-align: center;">Action</th>
+              </thead>
+              <tbody v-if="Object.keys(siteExcelColumns[selectActionSite]).length > 0">
+                <tr v-for="(data, index) in siteExcelColumns[selectActionSite]" :key="index">
+                  <td style="width: 130px;">
+                    <div class="field">
+                      <b-switch
+                        v-model="data.is_active"
+                        type="is-success"
+                      >{{ (data.is_active === true)? "ON":"OFF" }}</b-switch>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      v-if="index === 'form_filled'"
+                      title="After the form is successful feeded, you can give what script you want to run."
+                    >
+                      <code>{{ index }}</code>
+                    </span>
+                    <span
+                      v-else-if="index === 'entry_saved'"
+                      title="After the form is successful submit, you can give what script you want to run."
+                    >
+                      <code>{{ index }}</code>
+                    </span>
+                    <span
+                      v-else-if="index === 'page_loaded'"
+                      title="After the page is fully loaded, you can give your Custom Script."
+                    >
+                      <code>{{ index }}</code>
+                    </span>
+                    <span
+                      v-else-if="index === 'fill_action'"
+                      title="If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page."
+                    >
+                      <code>{{ index }}</code>
+                    </span>
+                    <span v-else>{{ index }}</span>
+                  </td>
+                  <td style="width: 250px;">
+                    <b-field v-if="['page_loaded'].indexOf(index) < 0">
+                      <b-select
+                        v-model="data.element_type"
+                        placeholder="Select element type"
+                        expanded
+                      >
+                        <option value="id">ID</option>
+                        <!-- <option value="class">Class</option> -->
+                        <option value="querySelector">document.querySelector()</option>
+                      </b-select>
+                    </b-field>
+                  </td>
+                  <td>
+                    <b-field>
+                      <b-input
+                        v-if="['page_loaded'].indexOf(index) < 0"
+                        v-model="data.element"
+                        placeholder="Enter element"
+                      ></b-input>
+                    </b-field>
+                    <b-tooltip
+                      v-if="['fill_action', 'form_filled', 'entry_saved'].indexOf(index) !== -1"
+                      label="Set HTML Element Event Type"
+                      position="is-top"
+                    >
+                      <b-field>
+                        <b-select
+                          v-model="data.event_type"
+                          placeholder="Select element type"
+                          expanded
+                        >
+                          <option value="click">click</option>
+                          <option value="focus">focus</option>
+                          <option value="change">change</option>
+                          <option value="dblclick">dblclick</option>
+                          <option value="copy">copy</option>
+                          <option value="cut">cut</option>
+                          <option value="paste">paste</option>
+                          <option value="submit">submit</option>
+                          <option value="focusin">focusin</option>
+                          <option value="focusout">focusout</option>
+                          <option value="mousedown">mousedown</option>
+                          <option value="mouseenter">mouseenter</option>
+                          <option value="mouseleave">mouseleave</option>
+                          <option value="mousemove">mousemove</option>
+                          <option value="mouseup">mouseup</option>
+                          <option value="mouseover">mouseover</option>
+                          <option value="mouseout">mouseout</option>
+                          <option value="input">input</option>
+                          <option value="keydown">keydown</option>
+                          <option value="keypress">keypress</option>
+                          <option value="keyup">keyup</option>
+                          <option value="load">load</option>
+                          <option value="unload">unload</option>
+                          <option value="force">force</option>
+                        </b-select>
+                      </b-field>
+                    </b-tooltip>
+                  </td>
+                  <td style="width: 120px;">
+                    <div class="field">
+                      <b-switch
+                        v-model="data.is_runJScript"
+                        type="is-success"
+                      >{{ (data.is_runJScript === true)? "Yes":"No" }}</b-switch>
+                    </div>
+                  </td>
+                  <td style="width: 145px; text-align: right;">
+                    <b-tooltip
+                      :type="(data.is_runJScript == true)? 'is-success':'is-warning'"
+                      label="Insert JS Script"
+                    >
+                      <b-button
+                        :type="(data.is_runJScript == true)? 'is-success':'is-warning'"
+                        icon-left="nodejs"
+                        @click="openScriptModel(index)"
+                      ></b-button>
+                    </b-tooltip>&nbsp;
+                    <b-tooltip label="Column Settings">
+                      <b-button
+                        type="is-primary"
+                        icon-left="settings"
+                        @click="openColumnSettingsModel(index)"
+                      ></b-button>
+                    </b-tooltip>&nbsp;
+                    <b-tooltip type="is-danger" label="Delete Column">
+                      <b-button type="is-danger" icon-left="delete" @click="deleteColumnData(index)"></b-button>
+                    </b-tooltip>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr>
+                  <th colspan="6" class="has-text-danger is-uppercase has-text-centered" style="padding: 30px;">Site Excel Columns Data Not Found!</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </b-tab-item>
 
@@ -260,20 +352,30 @@
             </div>
             <div class="level-right">
               <b-tooltip label="Fetch Excel Data">
-                <b-button type="is-success" icon-left="file" @click="convertExcelData">Fetch Excel Data</b-button>
-              </b-tooltip>
-              &nbsp;
+                <b-button
+                  type="is-success"
+                  icon-left="file"
+                  @click="convertExcelData"
+                >Fetch Excel Data</b-button>
+              </b-tooltip>&nbsp;
             </div>
           </nav>
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" v-if="excelSheetJSONData.obj.length > 0">
+          <table
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+            v-if="excelSheetJSONData.obj.length > 0"
+          >
             <thead>
               <th>Saved!</th>
               <th>#</th>
               <th v-for="key in excelSheetJSONData.keys" :key="key">{{ key }}</th>
-              <th>Status</th>
+              <th>Is Saved</th>
             </thead>
             <tbody>
-              <tr v-for="(data, index) in excelSheetJSONData.obj" :key="index" :class="(data.status == true)? 'is-selected':''">
+              <tr
+                v-for="(data, index) in excelSheetJSONData.obj"
+                :key="index"
+                :class="(data.status == true)? 'is-selected':''"
+              >
                 <td>
                   <div class="field">
                     <b-checkbox v-model="data.status"></b-checkbox>
@@ -296,13 +398,11 @@
         </div>
       </b-tab-item>
     </b-tabs>
-    <!-- Key JS Model -->
+    <!-- Column JS Model -->
     <b-modal :active.sync="jsModelData.isOpen" scroll="keep">
       <div class="card">
         <header class="card-header has-background-dark">
-          <p class="card-header-title has-text-white">
-            JS Script for this key: {{ jsModelData.key }}
-          </p>
+          <p class="card-header-title has-text-white">JS Script for this key: {{ jsModelData.key }}</p>
         </header>
         <div>
           <codemirror v-model="jsModelData.code" :options="jsModelData.options" />
@@ -313,30 +413,152 @@
               <b-checkbox v-model="jsModelData.isRunScript">Run Script</b-checkbox>
             </div>
           </div>
-          <div class="card-footer-item" @click="updateScriptInKey(jsModelData.key)">
+          <div class="card-footer-item" @click="updateScriptInColumn(jsModelData.key)">
             <strong>Save</strong>
           </div>
         </footer>
       </div>
     </b-modal>
+    <!-- Add New Site Model -->
+    <b-modal
+      :active.sync="isOpenNewSiteModel"
+      trap-focus
+      :destroy-on-hide="false"
+      aria-role="dialog"
+      aria-modal
+    >
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Site Details</p>
+        </header>
+        <section class="modal-card-body">
+          <!-- Site URL -->
+          <b-field label="Site URL" expanded>
+            <b-input v-model="url.site" placeholder="Enter Site URL"></b-input>
+          </b-field>
+          <!-- Site URL Type -->
+          <b-field label="Site URL Type" expanded>
+            <b-select
+              placeholder="Select a url type"
+              v-model="url.siteType"
+              @input="changeActionURLType"
+              expanded
+            >
+              <option value="fullPath">Full Path</option>
+              <option value="pathName">location.pathname</option>
+            </b-select>
+          </b-field>
+          <hr />
+          <p class="title is-6 has-text-success">Information after successfully submitting the form.</p>
+          <!-- Success URL -->
+          <b-field label="Success URL" expanded>
+            <b-input v-model="url.successPage" placeholder="Enter Success URL"></b-input>
+          </b-field>
+          <!-- Success URL Type -->
+          <b-field label="Success URL Type" expanded>
+            <b-select
+              placeholder="Select a url type"
+              v-model="url.successTPageype"
+              @input="changeSuccessURLType"
+              expanded
+            >
+              <option value="fullPath">Full Path</option>
+              <option value="pathName">location.pathname</option>
+            </b-select>
+          </b-field>
+          <!-- Success URL: Message -->
+          <b-field label="Success Message" expanded>
+            <b-input v-model="url.successMsg" placeholder="Enter Success Message"></b-input>
+          </b-field>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-primary" @click="saveSiteInformation">Save</button>
+        </footer>
+      </div>
+    </b-modal>
+    <!-- Site Column Settings Model -->
+    <b-modal
+      :active.sync="isOpenSiteColSettingsModel"
+      :width="640" scroll="keep"
+    >
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head" style="border-bottom: 0px solid #dbdbdb; border-radius: 0px;">
+          <p>Column Settings:&nbsp;</p>
+          <span v-if="activeSiteColName !== null" class="tag is-danger">{{ activeSiteColName }}</span>
+        </header>
+        <section class="modal-card-body">
+          <!-- Field Type: text, select, file, checkbox, radio, multi-select, textarea -->
+          <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+            <b-select placeholder="Select Field Type" v-model="colSettings.field_type" expanded>
+              <option value="text">Text</option>
+              <option value="select">Select (Drop-down)</option>
+              <option value="multiple">Multiple Select (Drop-down)</option>
+              <option value="checkbox">Checkbox</option>
+              <option value="radio">Circle Checkbox (Radio)</option>
+            </b-select>
+          </b-field>
+          <!-- Info Message Box: Multiple Checkbox -->
+          <b-message type="is-info" v-if="colSettings.field_type === 'checkbox'">
+            <p>Multiple checkbox appears like this <b-icon icon="checkbox-marked"></b-icon> and in these we can select multiple checkboxes.</p>
+          </b-message>
+          <!-- Info Message Box: Single Checkbox (Radio) -->
+          <b-message type="is-info" v-if="colSettings.field_type === 'radio'">
+            <p>The single checkbox appears like this <b-icon icon="radiobox-marked"></b-icon> and we can select only one such as Gender Male or Female.</p>
+          </b-message>
+          <!-- Field: Select Option with Drop-down value/name -->
+          <b-field label="How to fill the data in this Field" v-if="(['select', 'multiple'].indexOf(colSettings.field_type) !== -1)">
+            <b-select placeholder="Type" v-model="colSettings.check_value_through" expanded>
+              <option value="name">Through of Name</option>
+              <option value="value">Through of Value</option>
+            </b-select>
+          </b-field>
+          <!-- If excel column value is empty then fill this default value -->
+          <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1" expanded>
+            <b-input v-model="colSettings.default_value" placeholder="Enter Field Deafult Value"></b-input>
+          </b-field>
+          <!-- Field: Select Option with RegExp -->
+          <b-field label="If you want to match the excel data with this form field data then turn on RegExp." v-if="(['select', 'multiple', 'radio', 'checkbox'].indexOf(colSettings.field_type) !== -1)">
+            <b-checkbox v-model="colSettings.check_value_with_regexp">Search Data with RegExp</b-checkbox>
+          </b-field>
+
+          <!-- Pre-Define Keys -->
+          <!-- Action Name -->
+          <b-field label="If Entry Saved Then Run Action" v-if="['entry_saved'].indexOf(activeSiteColName) !== -1">
+            <b-select placeholder="Select Action" v-model="colSettings.action_name" expanded>
+              <option value="redirect">Redirect to Another Page</option>
+            </b-select>
+          </b-field>
+          <!-- Action Value -->
+          <b-field label="Action Value" v-if="['redirect'].indexOf(colSettings.action_name) !== -1">
+            <b-input v-model="colSettings.action_value" placeholder="Enter Field Action Value"></b-input>
+          </b-field>
+        </section>
+        <footer class="modal-card-foot" style="border-bottom: 0px solid #dbdbdb; border-radius: 0px;">
+          <button class="button is-primary" @click="saveColumnSettings">Save</button>
+        </footer>
+      </div>
+    </b-modal>
+    <!-- Footer -->
     <Footer></Footer>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import VueCodemirror from 'vue-codemirror'
+import Vue from "vue";
+import VueCodemirror from "vue-codemirror";
 // import base style
-import 'codemirror/lib/codemirror.css'
+import "codemirror/lib/codemirror.css";
 // import language js
-import 'codemirror/mode/javascript/javascript.js'
+import "codemirror/mode/javascript/javascript.js";
 // import theme style
 // import 'codemirror/theme/base16-dark.css'
-import 'codemirror/theme/monokai.css'
-Vue.use(VueCodemirror, /* {
+import "codemirror/theme/monokai.css";
+Vue.use(
+  VueCodemirror /* {
   options: { theme: 'base16-dark', ... },
   events: ['scroll', ...]
-} */)
+} */
+);
 
 // Header
 import Header from "../components/Header";
@@ -350,6 +572,10 @@ export default {
   },
   data() {
     return {
+      /**
+       * Custom/Pre-Define Key in the Excel Data
+       */
+      preDefineKey: [ "fill_action", "page_loaded", "form_filled", "entry_saved", "status", "isLoading", "totalErrorRequest"],
       // Active Tab Index
       activeTabIndex: 0,
       // Excel Sheet Data
@@ -358,18 +584,7 @@ export default {
       excelFileSettings: {
         dateFormat: "yyyy-mm-dd",
       },
-      // Data Keys
-      excelSheetKeys: {},
-      // Action URL
-      url: {
-        actionType: "fullPath",
-        action: "",
-        successType: "fullPath",
-        success: "",
-        successMsg: "",
-        error: "",
-      },
-      importKeyJSONFile: null,
+      importPageSettingsJSONFile: null,
       // JS Script Model Settings
       jsModelData: {
         isOpen: false,
@@ -378,20 +593,61 @@ export default {
         code: "",
         options: {
           tabSize: 2,
-          mode: 'text/javascript',
-          theme: 'monokai',
+          mode: "text/javascript",
+          theme: "monokai",
           lineNumbers: true,
           line: true,
         },
       },
       // Excel Sheet JSON Data
       excelSheetJSONData: {
-        keys: [],
-        obj: [],
-        total: 0,
+        keys: [], // For Show Max 4 Excel Columns Data in the Option Page
+        obj: [], // Excel Data for Feed Entry in the Action URL
+        total: 0, // Total Entry
       },
       // Buefy: Full Page Loading
       isFullPageLoading: false,
+      // Add New Site: Model
+      isOpenNewSiteModel: false,
+      // Insert Site URL Data
+      url: {
+        index: false, // index for update data
+        site: "",
+        siteType: "fullPath",
+        successPage: "",
+        successTPageype: "fullPath",
+        successMsg: "",
+      },
+      // All Action Site
+      allActionSite: [],
+      // Select Action Site
+      selectActionSite: 0,
+      // Site Excel Data Columns
+      siteExcelColumns: [],
+      // Action Site Column Settings Model Status
+      isOpenSiteColSettingsModel: false,
+      // Active Site Column Name
+      activeSiteColName: null,
+      /**
+       * Model: Column Settings Data
+       *---- If update then update in these functions -----
+       * openColumnSettingsModel()
+       * saveColumnSettings()
+       */
+      colSettings: {
+        // Field Type
+        field_type: "text",
+        // Check Excel Data through element name or value [Select, Checkbox, Radio]
+        check_value_through: "name",
+        // Check Excel Data through element name or value with regexp [Select, Checkbox, Radio]
+        check_value_with_regexp: false,
+        // If excel column value is empty then fill this default value
+        default_value: "",
+        // Action Name
+        action_name: "",
+        // Action Value
+        action_value: "",
+      },
     };
   },
   methods: {
@@ -402,10 +658,10 @@ export default {
      * @param {*} variable
      * @param {boolean} merge
      */
-    setDataINVariable: function(key, variable, merge = false) {
+    setDataINVariable: function (key, variable, merge = false) {
       var that = this;
-      return new Promise(function(resolve, reject) {
-        chrome.storage.local.get([key], function(budget) {
+      return new Promise(function (resolve, reject) {
+        chrome.storage.local.get([key], function (budget) {
           if (budget[key] != undefined && budget[key] !== "") {
             if (merge === true) {
               var newData = _.merge(budget[key], that[variable]);
@@ -425,16 +681,16 @@ export default {
     /**
      * Set Vue JS Variable Value in Extension Local Storage
      */
-    setValueINExtensionStorage: function(value, key) {
+    setValueINExtensionStorage: function (value, key) {
       try {
         var obj = {};
         obj[key] = value;
-        chrome.storage.local.set(obj, function() {
+        chrome.storage.local.set(obj, function () {
           // Notify that we saved.
           if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError.message);
           } else {
-            console.log("Key : " + key + "| New Value : ", value);
+            // console.log("Key : " + key + "| New Value : ", value);
           }
         });
       } catch (e) {
@@ -450,9 +706,12 @@ export default {
       var that = this;
       e.preventDefault();
 
-      if (this.excelFileSettings.dateFormat === null || that.excelFileSettings.dateFormat === "") {
+      if (
+        this.excelFileSettings.dateFormat === null ||
+        that.excelFileSettings.dateFormat === ""
+      ) {
         console.error("Date Format Invalid");
-        return false
+        return false;
       }
 
       var files = e.target.files,
@@ -460,12 +719,12 @@ export default {
       var reader = new FileReader();
 
       // Ready The Event For When A File Gets Selected
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         var data = e.target.result;
         var workbook = XLS.read(data, {
           type: "binary",
           cellDates: true,
-          dateNF: that.excelFileSettings.dateFormat
+          dateNF: that.excelFileSettings.dateFormat,
         });
 
         /* DO SOMETHING WITH workbook HERE */
@@ -475,7 +734,7 @@ export default {
 
         var uploadData = XLSX.utils.sheet_to_json(worksheet, {
           raw: false,
-          skipHeader: true
+          skipHeader: true,
         });
 
         that.excelSheetData = JSON.stringify(uploadData);
@@ -489,292 +748,308 @@ export default {
     },
 
     /**
-     * Fetch Keys in the Excel Sheet Data
-     */
-    fetchKeysInExcelData() {
-      var that = this
-      if (typeof(this.excelSheetData) === "string" && this.excelSheetData.length !== "") {
-        var data = JSON.parse(this.excelSheetData);
-        if (typeof(data) === "object" && data.length > 0 && data[0] !== undefined) {
-          // Data Object Keys
-          var dataKeys = Object.keys(data[0]);
-          var t = { ...that.excelSheetKeys };
-          dataKeys.forEach(item => {
-            if (that.excelSheetKeys[item] === undefined) {
-              console.log("fetchKeysInExcelData -> item", item)
-              t[item] = {
-                'key': item,
-                'element_type': 'id',
-                'event_type': 'click',
-                'element': '',
-                'jscript': '',
-                'is_runJScript': false,
-                'is_active': true,
-              };
-            }
-          });
-          this.$set(this, 'excelSheetKeys', t)
-          // this.$forceUpdate();
-          console.log("fetchKeysInExcelData -> that.excelSheetKeys", that.excelSheetKeys)
-        }
-      }
-    },
-
-    /**
      * Delete Excel JSON Data
      */
     deleteExcelJSONData(e) {
       e.preventDefault();
 
       this.$buefy.dialog.confirm({
-        title: 'Deleting Excel Data',
-        message: 'Are you sure you want to <b>delete</b> excel data? This action cannot be undone.',
-        confirmText: 'Delete',
-        type: 'is-danger',
+        title: "Deleting Excel Data",
+        message:
+          "Are you sure you want to <b>delete</b> excel data? This action cannot be undone.",
+        confirmText: "Delete",
+        type: "is-danger",
         hasIcon: true,
         onConfirm: () => {
-          this.excelSheetData = ""
+          this.excelSheetData = "";
           this.excelSheetJSONData.keys = [];
           this.excelSheetJSONData.obj = [];
           this.excelSheetJSONData.total = 0;
 
           // Remove Request Page Key Data: `objectVal__requestStatusData`
-          chrome.storage.local.remove(["objectVal__requestStatusData"], function() {
-            var error = chrome.runtime.lastError;
-            if (error) {
-              console.error(error);
+          chrome.storage.local.remove(
+            ["objectVal__requestStatusData"],
+            function () {
+              var error = chrome.runtime.lastError;
+              if (error) {
+                console.error(error);
+              }
             }
-          })
-        }
+          );
+        },
       });
     },
 
     /**
-     * Insert New Key
+     * Fetch Columns in the Excel Sheet Data
      */
-    insertNewKey() {
-      this.$buefy.dialog.prompt({
-        message: `Key Name`,
-        inputAttrs: {
-          placeholder: 'Enter Key Name',
-        },
-        trapFocus: true,
-        onConfirm: (value) => {
-          if (this.excelSheetKeys[value] === undefined) {
+    fetchColInExcelData() {
 
-            var newKey = {
-              'key': value,
-              'element_type': 'id',
-              'event_type': 'click', // Only for this key `fill_action`
-              'element': '',
-              'jscript': '',
-              'is_runJScript': false,
-              'is_active': true,
-            };
-            
-            // Set New Key in the Object
-            this.$set(this.excelSheetKeys, value, newKey)
+      // Check Excel Sheet Data
+      if (!this.excelSheetData) {
+        return false
+      }
 
-            // Push New Key in the Excel Data
-            this.pushNewKeyInExcelData(value)
+      // Parse String to JSON
+      var data = JSON.parse(this.excelSheetData);
 
-          } else {
-            this.$buefy.toast.open({
-              message: `This key already exists in the excel data.`,
-              position: 'is-bottom',
-              type: 'is-danger'
-            })
-          }
+      // First Excel Sheet Table Row
+      if (typeof data !== "object" || data.length <= 0 || data[0] === undefined) {
+        return false
+      }
+
+      // Check Active Site and Active Site Data is Exists
+      if (this.selectActionSite === null || this.allActionSite[parseInt(this.selectActionSite)] === undefined) {
+        return false
+      }
+
+      // Data Object Keys
+      var excelFirstRow = Object.keys(data[0]);
+      var col = {};
+      excelFirstRow.forEach((item) => {
+        if (this.siteExcelColumns[parseInt(this.selectActionSite)][item] === undefined) {
+          col[item] = {
+            key: item,
+            element_type: "id",
+            event_type: "click",
+            element: "",
+            jscript: "",
+            is_runJScript: false,
+            is_active: true,
+            // Column Settings
+            settings: {},
+          };
+        } else {
+          col[item] = this.siteExcelColumns[parseInt(this.selectActionSite)][item]
         }
+      });
+
+      // this.$set(object|Array, key|number, value)
+      this.$set(this.siteExcelColumns, parseInt(this.selectActionSite), col)
+
+      this.$buefy.toast.open({
+        message: `Fetch all excel sheet table header name.`,
+        position: "is-bottom",
+        type: "is-success"
       })
     },
 
     /**
-     * Push New Key in the All Excel Data
+     * Insert New Column in the Site Columns
      */
-    pushNewKeyInExcelData(newKey) {
+    insertNewColumn() {
+      this.$buefy.dialog.prompt({
+        message: `Column Name`,
+        inputAttrs: {
+          placeholder: "Enter Column Name",
+        },
+        trapFocus: true,
+        onConfirm: (value) => {
+          if (this.siteExcelColumns[parseInt(this.selectActionSite)][value] === undefined) {
+            var newCol = {
+              key: value,
+              element_type: "id",
+              event_type: "click", // Only for this key `fill_action`
+              element: "",
+              jscript: "",
+              is_runJScript: false,
+              is_active: true,
+              // Column Settings
+              settings: {},
+            };
+
+            // Set New Column in the Object
+            this.$set(this.siteExcelColumns[parseInt(this.selectActionSite)], value, newCol);
+
+            // Push New Column in the Excel Data
+            this.pushNewColumnInExcelData(value);
+          } else {
+            this.$buefy.toast.open({
+              message: `This column already exists in the excel data.`,
+              position: "is-bottom",
+              type: "is-danger",
+            });
+          }
+        },
+      });
+    },
+
+    /**
+     * Push New Column in the All Excel Data
+     */
+    pushNewColumnInExcelData(newCol) {
       if (this.excelSheetData && this.excelSheetData.length > 0) {
-
         // Start: Loading
-        this.isFullPageLoading = true
+        this.isFullPageLoading = true;
 
-        var newData = JSON.parse(this.excelSheetData).map(function(el) {
+        var newData = JSON.parse(this.excelSheetData).map((el) => {
           var o = Object.assign({}, el);
-          o[newKey] = "custom_key";
+          if (o[newCol] === undefined) {
+            if (this.preDefineKey.indexOf(newCol) !== -1) {
+              o[newCol] = "custom_key";
+            } else {
+              o[newCol] = null;
+            }
+          }
           return o;
         });
 
-        // 
+        //
         this.excelSheetData = JSON.stringify(newData);
 
         // Start: Loading
-        this.isFullPageLoading = false
+        this.isFullPageLoading = false;
       }
     },
 
     /**
-     * Delete Key Data
+     * Delete Column Data
      */
-    deleteKeyData(index) {
+    deleteColumnData(index) {
       this.$buefy.dialog.confirm({
-        title: 'Deleting Key',
-        message: 'Are you sure you want to <b>delete</b> this key? This action cannot be undone.',
-        confirmText: 'Delete',
-        type: 'is-danger',
+        title: "Deleting Column",
+        message: "Are you sure you want to <b>delete</b> this column? This action cannot be undone.",
+        confirmText: "Delete",
+        type: "is-danger",
         hasIcon: true,
         onConfirm: () => {
-          if (this.excelSheetKeys[index] !== undefined) {
-
-            // Delete Key in the All Excel Sheet Data
-            this.deleteKeyInExcelData(this.excelSheetKeys[index].key);
-
-            this.$delete(this.excelSheetKeys, index);
+          if (this.siteExcelColumns[parseInt(this.selectActionSite)][index] !== undefined) {
+            this.$delete(this.siteExcelColumns[parseInt(this.selectActionSite)], index);
           }
-        }
+        },
       });
     },
 
     /**
-     * Push New Key in the All Excel Data
+     * Delete Site Columns Data
      */
-    deleteKeyInExcelData(newKey) {
-      if (this.excelSheetData && this.excelSheetData.length > 0) {
-
-        // Start: Loading
-        this.isFullPageLoading = true
-
-        var newData = JSON.parse(this.excelSheetData).map(function(el) {
-          if (el[newKey] !== undefined) {
-            delete el[newKey]
-            return el
-          }
-        });
-
-        this.excelSheetData = JSON.stringify(newData);
-
-        // Start: Loading
-        this.isFullPageLoading = false
-      }
-    },
-
-    /**
-     * Delete All Key Data
-     */
-    deleteKeysData() {
+    clearSiteColumnData() {
       this.$buefy.dialog.confirm({
-        title: 'Deleting All Key',
-        message: 'Are you sure you want to <b>delete</b> all keys data? This action cannot be undone.',
-        confirmText: 'Delete',
-        type: 'is-danger',
+        title: "Deleting Site Columns Data",
+        message:
+          "Are you sure you want to <b>delete</b> all columns data? This action cannot be undone.",
+        confirmText: "Delete",
+        type: "is-danger",
         hasIcon: true,
         onConfirm: () => {
-          this.excelSheetKeys = {};
-        }
+          this.$set(this.siteExcelColumns, parseInt(this.selectActionSite), {})
+        },
       });
     },
 
     /**
-     * Import Key's Data
+     * Import Page Settings Data
      */
-    importKeyData() {
-      var that = this
-      if (this.importKeyJSONFile !== null && this.importKeyJSONFile.type !== undefined) {
-        if (this.importKeyJSONFile.type === "application/json") {
-
+    importPageSettingsData() {
+      var that = this;
+      if (this.importPageSettingsJSONFile !== null && this.importPageSettingsJSONFile.type !== undefined) {
+        if (this.importPageSettingsJSONFile.type === "application/json") {
           var reader = new FileReader();
           reader.onload = function (e) {
             var data = e.target.result;
             if (data !== undefined && data !== "") {
               var jsonData = JSON.parse(data);
               if (jsonData !== "" && jsonData !== null && Object.keys(jsonData).length > 0) {
-
                 // Import JSON Data in the Vue js Variable
-                that.excelSheetKeys = jsonData
-
+                that.allActionSite = jsonData.allActionSite;
+                that.siteExcelColumns = jsonData.siteExcelColumns;
               } else {
-                that.importKeyJSONFile = null
+                that.importPageSettingsJSONFile = null;
                 that.$buefy.toast.open({
-                  message: `Key's JSON Data Not Found!`,
-                  type: 'is-danger'
-                })
+                  message: `Page Settings JSON Data Not Found!`,
+                  type: "is-danger",
+                });
               }
-
             } else {
-              that.importKeyJSONFile = null
+              that.importPageSettingsJSONFile = null;
               that.$buefy.toast.open({
                 message: `File Data Not Found!`,
-                type: 'is-danger'
-              })
+                type: "is-danger",
+              });
             }
-          }
-  
-          reader.readAsBinaryString(this.importKeyJSONFile);
+          };
+
+          reader.readAsBinaryString(this.importPageSettingsJSONFile);
         } else {
-          this.importKeyJSONFile = null
+          this.importPageSettingsJSONFile = null;
         }
       } else {
-        this.importKeyJSONFile = null
+        this.importPageSettingsJSONFile = null;
       }
     },
 
     /**
-     * Export Key's Data
+     * Export Page Settings Data
      */
-    exportKeyData() {
+    exportPageSettingsData() {
       // Current DateTime
       var dateObj = new Date();
-      var date = dateObj.getDate() + "-"+ dateObj.getMonth() + "-"+ dateObj.getFullYear() +"-"+ dateObj.getHours() +"-"+ dateObj.getMinutes() +"-"+ dateObj.getSeconds();
+      var date =
+        dateObj.getDate() +
+        "-" +
+        dateObj.getMonth() +
+        "-" +
+        dateObj.getFullYear() +
+        "-" +
+        dateObj.getHours() +
+        "-" +
+        dateObj.getMinutes() +
+        "-" +
+        dateObj.getSeconds();
+      // Export Data
+      var exportData = {allActionSite: this.allActionSite, siteExcelColumns: this.siteExcelColumns}
       // Download
-      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.excelSheetKeys));
-      var dlAnchorElem = document.getElementById('exportKeysDataHref');
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData))
+      var dlAnchorElem = document.getElementById("exportKeysDataHref");
       dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "fill_extension_keys_data-" + date + ".json");
+      dlAnchorElem.setAttribute(
+        "download",
+        "fill_extension_page_data-" + date + ".json"
+      );
       dlAnchorElem.click();
     },
 
     /**
-     * Add Script in the Key Data
+     * Add Script in the Column Data
      */
     openScriptModel(index) {
-      // console.log("openScriptModel -> index", index)
-      if (this.excelSheetKeys[index] !== undefined && Object.keys(this.excelSheetKeys[index]).length > 0) {
-        var keyData = this.excelSheetKeys[index];
-        console.log("openScriptModel -> keyData", keyData)
+      if (this.siteExcelColumns[parseInt(this.selectActionSite)] !== undefined && this.siteExcelColumns[parseInt(this.selectActionSite)][index] !== undefined) {
+        var colData = this.siteExcelColumns[parseInt(this.selectActionSite)][index];
 
-        if (keyData.jscript === undefined) {
-          this.jsModelData.code = ""
+        if (colData.jscript === undefined) {
+          this.jsModelData.code = "";
         } else {
-          this.jsModelData.code = keyData.jscript
+          this.jsModelData.code = colData.jscript;
         }
 
-        if (keyData.is_runJScript !== undefined)
-          this.jsModelData.isRunScript = keyData.is_runJScript
+        if (colData.is_runJScript !== undefined)
+          this.jsModelData.isRunScript = colData.is_runJScript;
 
         // Update Key
-        this.jsModelData.key = index
+        this.jsModelData.key = index;
         setTimeout(() => {
-          this.jsModelData.isOpen = true
+          this.jsModelData.isOpen = true;
         }, 200);
       }
+      return false;
     },
 
     /**
-     * Update Script in the Key Data
+     * Update Script in the Column Data
      */
-    updateScriptInKey(index) {
-      if (this.excelSheetKeys[index] !== undefined && Object.keys(this.excelSheetKeys[index]).length > 0) {
-        var keyData = this.excelSheetKeys[index];
-        console.log("updateScriptInKey -> keyData", keyData)
-        // console.log("updateScriptInKey -> jsModelData.code", this.jsModelData.code)
+    updateScriptInColumn(index) {
+      if (this.siteExcelColumns[parseInt(this.selectActionSite)] !== undefined && this.siteExcelColumns[parseInt(this.selectActionSite)][index] !== undefined) {
+        var colData = this.siteExcelColumns[parseInt(this.selectActionSite)][index];
 
-        keyData["jscript"] = this.jsModelData.code
-        keyData["is_runJScript"] = this.jsModelData.isRunScript
+        colData["jscript"] = this.jsModelData.code;
+        colData["is_runJScript"] = this.jsModelData.isRunScript;
 
         this.$buefy.toast.open({
-          message: 'JS Script Updated.',
-          type: 'is-success'
-        })
+          message: "JS Script Updated.",
+          type: "is-success",
+        });
       }
+      return false;
     },
 
     /**
@@ -784,24 +1059,24 @@ export default {
      */
     changeActionURLType(val) {
       if (val) {
-        if (val === "pathName" && this.url.action !== "") {
+        if (val === "pathName" && this.url.site !== "") {
           try {
-            var url = new URL(this.url.action);
+            var url = new URL(this.url.site);
             if (url.pathname) {
-              this.url.action = url.pathname
+              this.url.site = url.pathname;
             }
           } catch (error) {
-            console.error("changeActionURLType -> error", error)
+            console.error("changeActionURLType -> error", error);
           }
-        } else if (val === "fullPath" && this.url.action !== "") {
+        } else if (val === "fullPath" && this.url.site !== "") {
           try {
-            var url = new URL(this.url.action);
+            var url = new URL(this.url.site);
             if (!url.pathname) {
-              this.url.action = ""
+              this.url.site = "";
             }
           } catch (error) {
-            this.url.action = ""
-            console.error("changeActionURLType -> error", error)
+            this.url.site = "";
+            console.error("changeActionURLType -> error", error);
           }
         }
       }
@@ -814,26 +1089,196 @@ export default {
      */
     changeSuccessURLType(val) {
       if (val) {
-        if (val === "pathName" && this.url.success !== "") {
+        if (val === "pathName" && this.url.successPage !== "") {
           try {
-            var url = new URL(this.url.success);
+            var url = new URL(this.url.successPage);
             if (url.pathname) {
-              this.url.success = url.pathname
+              this.url.successPage = url.pathname;
             }
           } catch (error) {
-            console.error("changeSuccessURLType -> error", error)
+            console.error("changeSuccessURLType -> error", error);
           }
-        } else if (val === "fullPath" && this.url.success !== "") {
+        } else if (val === "fullPath" && this.url.successPage !== "") {
           try {
-            var url = new URL(this.url.success);
+            var url = new URL(this.url.successPage);
             if (!url.pathname) {
-              this.url.success = ""
+              this.url.successPage = "";
             }
           } catch (error) {
-            this.url.success = ""
-            console.error("changeSuccessURLType -> error", error)
+            this.url.successPage = "";
+            console.error("changeSuccessURLType -> error", error);
           }
         }
+      }
+    },
+
+    /**
+     * Save Site Information
+     */
+    saveSiteInformation() {
+      if (!this.url.site || !this.url.siteType) {
+        return false
+      }
+
+      // Site Data
+      var siteInfo = {
+        site: this.url.site, 
+        siteType: this.url.siteType, 
+        successMsg: this.url.successMsg, 
+        successPage: this.url.successPage, 
+        successTPageype: this.url.successTPageype,
+      }
+
+      if (this.url.index === false) {
+        // Insert Site
+        this.allActionSite.push(siteInfo)
+        // Site Excel Columns
+        this.siteExcelColumns.push({})
+
+        this.$buefy.toast.open({
+          message: `Site Information has been successfully Saved. `,
+          type: "is-success",
+          position: 'is-bottom',
+        });
+
+      } else {
+
+        // Update Site
+        if (this.allActionSite[parseInt(this.url.index)] !== undefined) {
+          var siteData = this.allActionSite[parseInt(this.url.index)]
+
+          // Update Data
+          siteData.site = this.url.site, 
+          siteData.siteType = this.url.siteType, 
+          siteData.successMsg = this.url.successMsg, 
+          siteData.successPage = this.url.successPage, 
+          siteData.successTPageype = this.url.successTPageype,
+
+          this.$buefy.toast.open({
+            message: `Site Information has been successfully Updated. `,
+            type: "is-success",
+            position: 'is-bottom',
+          });
+        }
+
+        this.url.index = false
+      }
+
+      // Close Model
+      this.isOpenNewSiteModel = false
+    },
+
+    /**
+     * Edit Site Information
+     */
+    editSiteInformation(index) {
+      if (this.allActionSite[index] !== undefined) {
+        var siteData = this.allActionSite[index]
+
+        this.url.index = index // Array Index
+        this.url.site = siteData.site
+        this.url.siteType = siteData.siteType
+        this.url.successPage = siteData.successPage
+        this.url.successTPageype = siteData.successTPageype
+        this.url.successMsg = siteData.successMsg
+
+        // Open Site Model
+        this.isOpenNewSiteModel = true
+      }
+      return false
+    },
+
+    /**
+     * Delete Site Information
+     */
+    deleteSiteInformation(index) {
+      this.$buefy.dialog.confirm({
+        title: "Deleting Site",
+        message:
+          "Are you sure you want to <b>delete</b> site data? This action cannot be undone.",
+        confirmText: "Delete",
+        type: "is-danger",
+        hasIcon: true,
+        onConfirm: () => {
+          if (this.allActionSite[index] !== undefined) {
+            this.$delete(this.allActionSite, index);
+            // Site Excel Columns
+            this.$delete(this.siteExcelColumns, index);
+          }
+        },
+      });
+    },
+
+    /**
+     * Open Model: Site Column Settings
+     * @param {number} colName
+     */
+    openColumnSettingsModel(colName) {
+      // Check Selected Action Site Index
+      if (parseInt(this.selectActionSite) > 0) {
+        return false
+      }
+
+      // Check Column Name exists in the selected action site data
+      if (this.siteExcelColumns[parseInt(this.selectActionSite)][colName] !== undefined) {
+        var colData = this.siteExcelColumns[parseInt(this.selectActionSite)][colName]
+        // Settings Object
+        if (!colData.settings) {
+          return false
+        }
+
+        // Settings Data
+        this.colSettings.field_type = colData.settings.field_type
+        this.colSettings.check_value_through = colData.settings.check_value_through
+        this.colSettings.check_value_with_regexp = colData.settings.check_value_with_regexp
+        this.colSettings.default_value = colData.settings.default_value
+        // Action
+        this.colSettings.action_name = colData.settings.action_name
+        this.colSettings.action_value = colData.settings.action_value
+        
+        // Open Column Settings Model
+        this.isOpenSiteColSettingsModel = true
+        // Set Active Column Name
+        this.activeSiteColName = colName
+      }
+      return false
+    },
+
+    /**
+     * Save Site Column Settings: Model
+     */
+    saveColumnSettings() {
+      if (!this.activeSiteColName) {
+        return false
+      }
+
+      // Check Column Name exists in the selected action site data
+      if (this.siteExcelColumns[parseInt(this.selectActionSite)][this.activeSiteColName] !== undefined) {
+        var colData = this.siteExcelColumns[parseInt(this.selectActionSite)][this.activeSiteColName]
+        // Settings Object
+        if (!colData.settings) {
+          return false
+        }
+
+        // Settings Data
+        this.$set(colData.settings, 'field_type', this.colSettings.field_type)
+        this.$set(colData.settings, 'check_value_through', this.colSettings.check_value_through)
+        this.$set(colData.settings, 'check_value_with_regexp', this.colSettings.check_value_with_regexp)
+        this.$set(colData.settings, 'default_value', this.colSettings.default_value)
+        // Action
+        this.$set(colData.settings, 'action_name', this.colSettings.action_name)
+        this.$set(colData.settings, 'action_value', this.colSettings.action_value)
+
+        this.$buefy.toast.open({
+          message: `Column Settings has been successfully Saved. `,
+          type: "is-success",
+          position: 'is-bottom',
+        });
+        
+        // Close Site Column Settings Model
+        this.isOpenSiteColSettingsModel = false
+        // Set Active Column Name
+        this.activeSiteColName = null
       }
     },
 
@@ -847,30 +1292,38 @@ export default {
      * 1. 'status' => Data Successful Saved!
      * 2. 'isLoading' => Request is Under Proccess..
      * 3. `totalErrorRequest` => Count Total Fail Request
-     * 
+     *
      * Check These Key in the `/script/run.js` File.
      */
     convertExcelData() {
-      var that = this
+      var that = this;
 
-      // Empty Old keys
-      this.excelSheetJSONData.keys = [];
+      var excelData = JSON.parse(this.excelSheetData);
+      if (typeof excelData !== "object" || excelData.length <= 0) {
+        return false
+      }
 
-      if (this.excelSheetData !== "") {
-        var excelData = JSON.parse(this.excelSheetData);
-        if (typeof(excelData) === "object" && excelData.length > 0) {
-          // console.log("convertExcelData -> excelData", excelData)
+      this.$buefy.dialog.confirm({
+        title: "Fetch Excel Data",
+        message: "Are you sure you want to <b>fetch</b> new excel data? This will delete the old data.",
+        confirmText: "Fetch",
+        type: "is-info",
+        hasIcon: true,
+        onConfirm: () => {
+
+          // Empty Old keys
+          this.excelSheetJSONData.keys = [];
+    
           excelData.forEach(function (item, index) {
-
             // Insert Settings Keys
-            excelData[index]['status'] = false;
-            excelData[index]['isLoading'] = false;
-            excelData[index]['totalErrorRequest'] = 0;
-
+            excelData[index]["status"] = false;
+            excelData[index]["isLoading"] = false;
+            excelData[index]["totalErrorRequest"] = 0;
+    
             // Fetch Excel Data Keys
             if (index === 0) {
               if (Object.keys(item).length > 0) {
-                // Maximum Four Column Push
+                // Maximum Four Column Push For Show Data in Table
                 for (let index = 0; index < 4; index++) {
                   var dataKeyObj = Object.keys(item);
                   if (dataKeyObj[index] !== undefined && dataKeyObj[index] !== null) {
@@ -881,17 +1334,17 @@ export default {
               }
             }
           });
-
-          this.excelSheetJSONData.obj = excelData // Excel JSON Data
-          this.excelSheetJSONData.total = excelData.length // Excel JSON Data Length
+    
+          this.excelSheetJSONData.obj = excelData; // Excel JSON Data
+          this.excelSheetJSONData.total = excelData.length; // Excel JSON Data Length
         }
-      }
+      });
     },
 
     /**
      * ___________________ Check JSON Data is Valid _______________________
      */
-    checkJSONDataValid: function() {
+    checkJSONDataValid: function () {
       var jsonContainer = $("#json-container");
 
       var error = false;
@@ -913,85 +1366,93 @@ export default {
         .jsonPresenter("destroy") // Clear any previous JSON being presented through this plugin for this container
         .jsonPresenter({
           // Use the jquery.jsonPresenter plugin using the input from the textarea above
-          json: json
+          json: json,
         })
         .jsonPresenter("expand", 0); // Expand all JSON properties so that none of them are collapsed
     },
-    jsonDataExpanAll: function() {
+    jsonDataExpanAll: function () {
       var jsonContainer = $("#json-container");
       jsonContainer.jsonPresenter("expandAll");
     },
-    jsonDataCollapseAll: function() {
+    jsonDataCollapseAll: function () {
       var jsonContainer = $("#json-container");
       jsonContainer.jsonPresenter("collapseAll");
     },
-    jsonDataExpanLevels: function() {
+    jsonDataExpanLevels: function () {
       var jsonContainer = $("#json-container");
       var levels = parseInt($("#levels").val());
       jsonContainer.jsonPresenter("expand", levels);
-    }
+    },
   },
   watch: {
-    
     // Active Tab Index
     activeTabIndex: function (newValue) {
-      this.setValueINExtensionStorage(newValue, 'tabVal__activeTabIndex');
+      this.setValueINExtensionStorage(newValue, "tabVal__activeTabIndex");
     },
 
     // Excel Sheet Data
     excelSheetData: {
-      handler: function(newObject) {
+      handler: function (newObject) {
         this.setValueINExtensionStorage(newObject, "objectVal__excelSheetData");
       },
-      deep: true
+      deep: true,
     },
 
-    // Keys Data
-    excelSheetKeys: {
-      handler: function(newObject) {
-        this.setValueINExtensionStorage(newObject, "objectVal__excelSheetKeys");
-      },
-      deep: true
-    },
-    
     // Excel Sheet JSON Data
     excelSheetJSONData: {
-      handler: function(newObject) {
-        this.setValueINExtensionStorage(newObject, "objectVal__excelSheetJSONData");
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(
+          newObject,
+          "objectVal__excelSheetJSONData"
+        );
       },
-      deep: true
+      deep: true,
     },
 
-    // Action URL's
-    url: {
-      handler: function(newObject) {
-        this.setValueINExtensionStorage(newObject, "objectVal__actionURL");
+    // Action All Site
+    allActionSite: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(newObject, "objectVal__allActionSite");
       },
-      deep: true
+      deep: true,
+    },
+
+    // Site Excel Columns
+    siteExcelColumns: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(newObject, "objectVal__siteExcelColumns");
+      },
+      deep: true,
     },
 
     // Excel Upload Settings
     excelFileSettings: {
-      handler: function(newObject) {
-        this.setValueINExtensionStorage(newObject, "objectVal__excelFileSettings");
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(
+          newObject,
+          "objectVal__excelFileSettings"
+        );
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
-    var that = this
-    
+    var that = this;
+
     this.setDataINVariable("objectVal__excelSheetData", "excelSheetData");
-    this.setDataINVariable("objectVal__excelSheetKeys", "excelSheetKeys");
-    this.setDataINVariable("objectVal__excelSheetJSONData", "excelSheetJSONData");
+    this.setDataINVariable(
+      "objectVal__excelSheetJSONData",
+      "excelSheetJSONData"
+    );
+    this.setDataINVariable("objectVal__siteExcelColumns", "siteExcelColumns");
     this.setDataINVariable("objectVal__excelFileSettings", "excelFileSettings");
-    this.setDataINVariable("objectVal__actionURL", "url");
+    this.setDataINVariable("objectVal__allActionSite", "allActionSite");
 
     // Tab Index
-    chrome.storage.local.get('tabVal__activeTabIndex', function (budget) {
+    chrome.storage.local.get("tabVal__activeTabIndex", function (budget) {
       if (budget.tabVal__activeTabIndex != undefined)
         that.activeTabIndex = budget.tabVal__activeTabIndex;
     });
-  }
+  },
 };
 </script>

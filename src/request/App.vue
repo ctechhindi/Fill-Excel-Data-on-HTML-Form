@@ -78,7 +78,7 @@
             <thead>
               <th>Field Required</th>
               <th>Field</th>
-              <th>Excel Data Key</th>
+              <th>Excel Data Columns</th>
               <th>Field Default Value</th>
               <th>Action</th>
             </thead>
@@ -92,7 +92,7 @@
                   <b-field>
                     <b-select v-model="data.key" placeholder="Select excel key name" expanded>
                       <option value="">--- Empty Value --- </option>
-                      <option v-for="option in excelSheetKeys" :value="option.key" :key="option.key">
+                      <option v-for="option in excelSheetColumns" :value="option.key" :key="option.key">
                         {{ option.key }}
                       </option>
                     </b-select>
@@ -282,8 +282,8 @@ export default {
     return {
       // Active Tab Index
       activeTabIndex: 0,
-      // Excel Sheet Keys
-      excelSheetKeys: {},
+      // Excel Sheet Columns
+      excelSheetColumns: [],
       // Excel JSON Data
       excelSheetJSONData: {},
 
@@ -382,6 +382,34 @@ export default {
         });
       } catch (e) {
         console.error("Caught", e);
+      }
+    },
+
+    /**
+     * Fetch Columns/Keys in the Excel Sheet Data
+     */
+    fetchColInExcelData() {
+      console.log("fetchColInExcelData -> this.excelSheetJSONData", this.excelSheetJSONData)
+      if (!this.excelSheetJSONData || !this.excelSheetJSONData.obj) {
+        return false
+      }
+
+      // Pre-Define Keys
+      var preDefineKeys = ["totalErrorRequest", "status", "isLoading"]
+      if (this.excelSheetJSONData.obj.length > 0) {
+        for (let index = 0; index === 0; index++) {
+          const keys = this.excelSheetJSONData.obj[index];
+          for (let index2 = 0; index2 < Object.keys(keys).length; index2++) {
+            const key = Object.keys(keys)[index2];
+            if (preDefineKeys.indexOf(key) !== -1) {
+              continue
+            }
+
+            this.excelSheetColumns.push({key: key});
+            // this.$set(this.excelSheetColumns, 'key', key)
+          }
+        }
+        console.log("fetchColInExcelData -> this.excelSheetColumns", this.excelSheetColumns)
       }
     },
     
@@ -820,16 +848,19 @@ export default {
    }
   },
 
-  created() {
+  async created() {
     this.isFullPageLoading = true
 
-    this.setDataINVariable("objectVal__excelSheetKeys", "excelSheetKeys");
-    this.setDataINVariable("objectVal__excelSheetJSONData", "excelSheetJSONData");
+    var out = await this.setDataINVariable("objectVal__excelSheetJSONData", "excelSheetJSONData");
+    if (out.status === true && Object.keys(out.data).length > 0) {
+      // Fetch Keys
+      this.fetchColInExcelData()
+    }
 
-    this.setDataINVariable("objectVal__requestData", "request");
-    this.setDataINVariable("objectVal__requestFieldData", "requestFieldData");
-    this.setDataINVariable("objectVal__requestStatusData", "requestStatusData");
-    this.setDataINVariable("objectVal__requestPageSettings", "requestPageSettings");
+    await this.setDataINVariable("objectVal__requestData", "request");
+    await this.setDataINVariable("objectVal__requestFieldData", "requestFieldData");
+    await this.setDataINVariable("objectVal__requestStatusData", "requestStatusData");
+    await this.setDataINVariable("objectVal__requestPageSettings", "requestPageSettings");
   },
   mounted() {
     var that = this
