@@ -132,6 +132,10 @@ try {
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 
+### V.0.1.3
+
+* `FIXED: ` Background Javascript Error
+
 ### V.0.1.2
 
 * Video Tutorial: https://youtu.be/YQjNpHHdYvo
