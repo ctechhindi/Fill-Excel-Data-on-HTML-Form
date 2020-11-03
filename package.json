@@ -1,6 +1,6 @@
 {
   "name": "fill-excel-data-to-form",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Fill Excel Sheet Data into HTML Online Forms",
   "author": "Jeevan Lal <jeevan15498@gmail.com>",
   "license": "MIT",
@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "buefy": "^0.8.20",
+    "bulma-extensions": "^6.2.7",
     "exceljs": "^4.1.1",
     "file-saver": "^2.0.2",
     "vue": "^2.6.10",

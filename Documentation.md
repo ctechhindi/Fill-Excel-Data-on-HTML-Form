@@ -2,9 +2,9 @@
 
 ## HTML Form Field Types
 
-### `Drop-down (Select Box)`
+<!-- ### `Drop-down (Select Box)` -->
 
----
+<!-- --- -->
 
 ### `Checkbox`
 

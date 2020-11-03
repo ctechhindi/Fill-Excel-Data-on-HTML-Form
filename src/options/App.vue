@@ -186,7 +186,7 @@
             </nav>
             <table
               class="table is-bordered is-narrow is-hoverable is-fullwidth"
-              v-show="siteExcelColumns.length > 0"
+              v-show="siteExcelColumns.length > 0 && selectActionSite !== undefined && siteExcelColumns[selectActionSite] !== undefined"
             >
               <thead v-if="Object.keys(siteExcelColumns[selectActionSite]).length > 0">
                 <th>ON/OFF</th>
@@ -194,7 +194,7 @@
                   <b-tooltip label="Table Header Names in Excel Sheet" position="is-right">Excel Column</b-tooltip>
                 </th>
                 <th>Field Type</th>
-                <th>Field Element</th>
+                <th>Field Element Address</th>
                 <th>RUN Script</th>
                 <th style="text-align: center;">Action</th>
               </thead>
@@ -398,8 +398,8 @@
         </div>
       </b-tab-item>
 
-      <!-- About Us -->
-      <b-tab-item label="About Us" icon="information">
+      <!-- About Us / Support  -->
+      <b-tab-item label="About/Support" icon="information">
         <div class="container">
           <h1 class="title is-5">Fill Excel Data in the Online Forms</h1>
           <ul>
@@ -407,10 +407,23 @@
             <li><a href="https://bit.ly/3lONmlS" target="_blank" rel="noopener noreferrer"><b-icon icon="git"></b-icon> GitHub</a></li>
             <li><a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form/blob/master/Documentation.md" target="_blank" rel="noopener noreferrer"><b-icon icon="information"></b-icon> Documentation</a></li>
             <li><a href="https://www.patreon.com/ctechhindi" target="_blank" rel="noopener noreferrer"><b-icon icon="patreon"></b-icon> Patreon</a></li>
+            <li><a href="https://www.paypal.com/paypalme2/ctechhindi" target="_blank" rel="noopener noreferrer"><b-icon icon="paypal"></b-icon> PayPal</a></li>
+          </ul>
+          <br>
+          <h1 class="title is-5">Support Me for Motivation</h1>
+          <ul>
+            <li><code>₹10+</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Donate an Amount of your Choice</a></li>
+            <li><code>₹50&nbsp;</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Thank you for supporting C Tech Hindi.</a></li>
+            <li><code>₹100</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name will be put on the extension option page.</a></li>
+            <li><code>₹200</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name will be put to the top of extension option page.</a></li>
+            <li><code>₹500</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name or a company logo will be put to extension option page.</a></li>
+            <li><code>₹500+</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name or a company logo will be put to extension option page and github repository readme page.</a></li>
           </ul>
         </div>
       </b-tab-item>
+
     </b-tabs>
+
     <!-- Column JS Model -->
     <b-modal :active.sync="jsModelData.isOpen" scroll="keep">
       <div class="card">
@@ -432,6 +445,7 @@
         </footer>
       </div>
     </b-modal>
+
     <!-- Add New Site Model -->
     <b-modal
       :active.sync="isOpenNewSiteModel"
@@ -489,6 +503,7 @@
         </footer>
       </div>
     </b-modal>
+
     <!-- Site Column Settings Model -->
     <b-modal
       :active.sync="isOpenSiteColSettingsModel"
@@ -500,6 +515,7 @@
           <span v-if="activeSiteColName !== null" class="tag is-danger">{{ activeSiteColName }}</span>
         </header>
         <section class="modal-card-body">
+          <!-- This Field Type use fetchColInExcelData() function -->
           <!-- Field Type: text, select, file, checkbox, radio, multi-select, textarea -->
           <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
             <b-select placeholder="Select Field Type" v-model="colSettings.field_type" expanded>
@@ -562,6 +578,37 @@
         </footer>
       </div>
     </b-modal>
+
+    <!-- Release New Version -->
+    <b-modal :active.sync="isModelNewVersion" scroll="keep">
+      <b-message type="is-primary" aria-close-label="Close message">
+        <section>
+          <div class="container">
+            <h1 class="title is-5"><b-icon icon="history"></b-icon>&nbsp;Release Notes (changelog)</h1>
+            <div class="content">
+              <div class="timeline">
+                <div v-for="release in releaseNotesData" :key="release.version">
+                  <header class="timeline-header">
+                    <span class="tag is-primary is-medium">{{ release.version }}</span>
+                  </header>
+                  <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                      <p class="heading">{{ release.date }}</p>
+                      <div v-for="desc in release.desc" :key="desc.index" style="margin-bottom: 5px;">
+                        <span class="tag is-hidden-mobile" v-bind:class="applyReleaseTagClass(desc.tag)" v-bind:style="applyReleaseTagStyle(desc.tag)">{{ desc.tag }}</span>
+                        <span style="padding-left: 15px; font: small-caption;" v-html="desc.name"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </b-message>
+    </b-modal>
+
     <!-- Footer -->
     <Footer></Footer>
   </div>
@@ -583,6 +630,9 @@ Vue.use(
   events: ['scroll', ...]
 } */
 );
+
+// https://wikiki.github.io/components/timeline/
+import 'bulma-extensions/bulma-timeline/dist/css/bulma-timeline.min.css'
 
 // Header
 import Header from "../components/Header";
@@ -608,6 +658,10 @@ export default {
       excelFileSettings: {
         dateFormat: "yyyy-mm-dd",
       },
+      // Excel First Sheet Table Header (Sheet Columns)
+      excelFirstSheetColumnData: "",
+      // All Ready Define Field Address in the Excel Sheet
+      fieldAddressExcelData: "",
       importPageSettingsJSONFile: null,
       // JS Script Model Settings
       jsModelData: {
@@ -678,6 +732,23 @@ export default {
       // Javascript Events
       javascriptEventList: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
       javascriptEventListFilter: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
+      // Release New Version
+      isModelNewVersion: true,
+      releaseNotesData: [
+        // Tags: NEW, ADDED, FIXED, IMPROVED
+        {
+          version: '0.1.2',
+          date: 'Sunday, 25 October 2020',
+          desc: [
+            { tag: 'ADDED', name: '<a href="https://youtu.be/YQjNpHHdYvo" target="_blank">💻 Video Tutorial</a>' },
+            { tag: 'NEW', name: 'Add Support Page' },
+            { tag: 'NEW', name: 'Show Total Entry and Active Entry Number in the Toolbar' },
+            { tag: 'NEW', name: 'If are you using generate excel method then field address and field settings (field type) data automatic set.' },
+            { tag: 'FIXED', name: 'Some excel sheet columns data not fetch in the extension options page.' },
+            { tag: 'IMPROVED', name: 'Extension Context Menu Option' },
+          ],
+        },
+      ]
     };
   },
   methods: {
@@ -751,23 +822,47 @@ export default {
       // Ready The Event For When A File Gets Selected
       reader.onload = function (e) {
         var data = e.target.result;
+
         var workbook = XLS.read(data, {
           type: "binary",
           cellDates: true,
           dateNF: that.excelFileSettings.dateFormat,
         });
 
-        /* DO SOMETHING WITH workbook HERE */
+        // DO SOMETHING WITH workbook HERE
         var first_sheet_name = workbook.SheetNames[0];
-        /* Get worksheet */
+        // Get worksheet
         var worksheet = workbook.Sheets[first_sheet_name];
-
         var uploadData = XLSX.utils.sheet_to_json(worksheet, {
-          raw: false,
+          raw: false, // for sheet date
           skipHeader: true,
         });
 
+        // First Excel Sheet Table Header Names (Columns Name)
+        const firstSheetheader = []
+        const columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1
+        for (let i = 0; i < columnCount; ++i) {
+          firstSheetheader[i] = worksheet[`${XLSX.utils.encode_col(i)}1`].v
+        }
+
         that.excelSheetData = JSON.stringify(uploadData);
+        // Excel First Sheet Table Header (Sheet Columns)
+        that.excelFirstSheetColumnData = JSON.stringify(firstSheetheader);
+
+        /**
+         * Check Sheet Name `Field Address(Not Delete)` in the Upload Excel Sheets
+         */
+        if (workbook.SheetNames.indexOf("Field Address(Not Delete)") !== -1) {
+          var field_address_sheet = workbook.SheetNames[workbook.SheetNames.indexOf("Field Address(Not Delete)")];
+          var columnsAddress = workbook.Sheets[field_address_sheet];
+          var addressData = XLSX.utils.sheet_to_json(columnsAddress, {
+            raw: false,
+            skipHeader: true,
+          });
+
+          // All Ready Define Field Address in the Excel Sheet
+          that.fieldAddressExcelData = JSON.stringify(addressData);
+        }
 
         // Clear Upload Field Value
         $("#uploadExcel").val(null);
@@ -792,6 +887,7 @@ export default {
         hasIcon: true,
         onConfirm: () => {
           this.excelSheetData = "";
+          this.fieldAddressExcelData = "";
           this.excelSheetJSONData.keys = [];
           this.excelSheetJSONData.obj = [];
           this.excelSheetJSONData.total = 0;
@@ -817,30 +913,54 @@ export default {
 
       // Check Excel Sheet Data
       if (!this.excelSheetData) {
-        return false
-      }
-
-      // Parse String to JSON
-      var data = JSON.parse(this.excelSheetData);
-
-      // First Excel Sheet Table Row
-      if (typeof data !== "object" || data.length <= 0 || data[0] === undefined) {
+        this.$buefy.toast.open({
+          message: `<b>Error: </b> First, upload the Excel sheet in the Upload Data Tab.`,
+          type: 'is-danger'
+        })
         return false
       }
 
       // Check Active Site and Active Site Data is Exists
       if (this.selectActionSite === null || this.allActionSite[parseInt(this.selectActionSite)] === undefined) {
+        this.$buefy.toast.open({
+          message: `<b>Error: </b> Active Site and Active Site Data is Exists.`,
+          type: 'is-danger'
+        })
         return false
       }
 
-      // Data Object Keys
-      var excelFirstRow = Object.keys(data[0]);
+      // Check Excel First Sheet Columns Name
+      var excelColumns = JSON.parse(this.excelFirstSheetColumnData);
+      if (typeof excelColumns !== "object" || excelColumns.length <= 0) {
+        this.$buefy.toast.open({
+          message: `<b>Error: </b> Excel First Sheet Columns Data Not Found.`,
+          type: 'is-danger'
+        })
+        return false
+      }
+
+      // All Ready Define Field Address in the Excel Sheet (Field Address(Not Delete))
+      if (!this.fieldAddressExcelData === false) {
+        var excelColAddress = JSON.parse(this.fieldAddressExcelData);
+        if (typeof excelColAddress !== "object" || excelColAddress.length <= 0) {
+          excelColAddress = undefined // if empty then undefined variable
+        } else {
+          // Modify Object
+          var keysObjectData = {}
+          for (let index = 0; index < excelColAddress.length; index++) {
+            const keyObj = excelColAddress[index];
+            keysObjectData[keyObj.name] = keyObj
+          }
+        }
+      }
+
+      // First Sheet Columns Name
       var col = {};
-      excelFirstRow.forEach((item) => {
+      excelColumns.forEach((item) => {
         if (this.siteExcelColumns[parseInt(this.selectActionSite)][item] === undefined) {
-          col[item] = {
+          var fetchedCol = {
             key: item,
-            element_type: "id",
+            element_type: "id", // id, querySelector
             event_type: "click",
             element: "",
             jscript: "",
@@ -849,6 +969,41 @@ export default {
             // Column Settings
             settings: {},
           };
+
+          // Set Field Address: In the excel sheet (Field Address(Not Delete))
+          if (keysObjectData !== undefined && Object.keys(keysObjectData).length > 0) {
+            if (keysObjectData[item] !== undefined) {
+              // Column Data
+              var keysObject = keysObjectData[item];
+
+              // Field Name: input, textarea, select
+              // Field Type: text, email, radio, checkbox, select, multiple, textarea
+              if (!keysObject.field === false && !keysObject.fieldType === false) {
+                // Select Box
+                if (keysObject.field === "select" && keysObject.fieldType === "select") {
+                  // Update Column Settings
+                  fetchedCol["settings"]["field_type"] = "select"
+                  // Select Option with Drop-down value/name
+                  fetchedCol["settings"]["check_value_through"] = "value"
+                } else if (keysObject.field === "select" && keysObject.fieldType === "multiple") {
+                  // Update Column Settings: Field Type
+                  fetchedCol["settings"]["field_type"] = "multiple"
+                  // Select Option with Drop-down value/name
+                  fetchedCol["settings"]["check_value_through"] = "value"
+                }
+              }
+
+              // Field: selector
+              if (!keysObject.selector === false) {
+                fetchedCol["element_type"] = "querySelector"
+                fetchedCol["element"] = keysObject.selector
+              }
+            }
+          }
+
+          // Push Column Data
+          col[item] = fetchedCol
+
         } else {
           col[item] = this.siteExcelColumns[parseInt(this.selectActionSite)][item]
         }
@@ -1430,6 +1585,28 @@ export default {
       var levels = parseInt($("#levels").val());
       jsonContainer.jsonPresenter("expand", levels);
     },
+
+    // Release Timeline
+    applyReleaseTagClass(tag) {
+      if (tag === "NEW") {
+        return "is-dark"
+      } else if (tag === "ADDED") {
+        return "is-info"
+      } else if (tag === "FIXED") {
+        return "is-danger"
+      } else if (tag === "IMPROVED") {
+        return "is-warning"
+      }
+    },
+    applyReleaseTagStyle(tag) {
+      if (tag === "NEW") {
+        return "padding: 0px 24px 0px;"
+      } else if (tag === "ADDED") {
+        return "padding: 0px 18px 0px;"
+      } else if (tag === "FIXED") {
+        return "padding: 0px 23px 0px;"
+      }
+    }
   },
   watch: {
     // Active Tab Index
@@ -1441,6 +1618,22 @@ export default {
     excelSheetData: {
       handler: function (newObject) {
         this.setValueINExtensionStorage(newObject, "objectVal__excelSheetData");
+      },
+      deep: true,
+    },
+
+    // All Ready Define Field Address in the Excel Sheet
+    fieldAddressExcelData: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(newObject, "objectVal__fieldAddressExcelData");
+      },
+      deep: true,
+    },
+    
+    // Excel First Sheet Table Header (Sheet Columns)
+    excelFirstSheetColumnData: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(newObject, "objectVal__excelFirstSheetColumnData");
       },
       deep: true,
     },
@@ -1487,6 +1680,8 @@ export default {
     var that = this;
 
     this.setDataINVariable("objectVal__excelSheetData", "excelSheetData");
+    this.setDataINVariable("objectVal__fieldAddressExcelData", "fieldAddressExcelData");
+    this.setDataINVariable("objectVal__excelFirstSheetColumnData", "excelFirstSheetColumnData");
     this.setDataINVariable(
       "objectVal__excelSheetJSONData",
       "excelSheetJSONData"
@@ -1503,3 +1698,17 @@ export default {
   },
 };
 </script>
+
+<style>
+/* Responsive Break Points */
+@media (max-width: 599px) {
+
+  .timeline-item {
+    font-size: 13px;
+  }
+
+  div > span.tag {
+    font-size: 13px;
+  }
+}
+</style>

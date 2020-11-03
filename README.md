@@ -128,7 +128,19 @@ try {
   {"readyState":0,"responseText":"","status":0,"statusText":"error"}
   ```
 * Key not link to the submit button `https://ioclmaruticampaign.in/?ROiD=133953`
+* If excel data successful fill in the form then play sound like
+* Automatic set multiple select field type
+* Radio Field Selector only name not id
 
+### V.0.1.2
+
+* Video Tutorial: https://youtu.be/YQjNpHHdYvo
+* `NEW: ` Support Page: https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html
+* `NEW: ` Show Total Entry and Active Entry Number in the Toolbar
+* `NEW: ` If are you using generate excel method then field address and field settings (field type) data automatic set.
+* `FIXED: ` Some excel sheet columns data not fetch in the extension options page.
+* `IMPROVE: ` Extension Context Menu Option
+  * ![Copy Field Address](./screenshot/copy-element-selector2.png)
 
 ### V.0.1.1
 
