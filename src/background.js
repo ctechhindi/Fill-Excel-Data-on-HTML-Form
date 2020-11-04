@@ -112,7 +112,7 @@ function onCopyElement(option, tab) {
     });
 
     // Open Extension Option Page
-    window.open(chrome.runtime.getURL('options/options.html'));
+    window.open(chrome.runtime.getURL('options/options.html?tab=1&update=0'));
 
   } else if (option.menuItemId === "generateExcelTemplate") {
 

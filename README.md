@@ -132,6 +132,13 @@ try {
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 
+### V.0.1.4
+
+* `NEW: ` Application Settings
+  * ![](./screenshot/fill-excel-extension-001.png)
+* `NEW: ` Option to turn on and off the Toolbar feature and second option to reposition it to the top or bottom of the screen.
+* `NEW: ` Check Get Parameters in the Options Page URL `"?tab=1&update=0"`
+
 ### V.0.1.3
 
 * `FIXED: ` Background Javascript Error

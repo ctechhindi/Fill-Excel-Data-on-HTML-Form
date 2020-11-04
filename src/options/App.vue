@@ -126,6 +126,12 @@
                   </a>
                 </b-upload>
               </b-tooltip>
+              &nbsp;|&nbsp;
+              <b-tooltip label="Page Settings" type="is-primary">
+                <b-button @click="isOpenNewSettingsModel = true" type="is-warning" icon-left="settings">
+                  Settings
+                </b-button>
+              </b-tooltip>
             </div>
           </nav>
 
@@ -504,6 +510,45 @@
       </div>
     </b-modal>
 
+    <!-- Settings Model -->
+    <b-modal
+      :active.sync="isOpenNewSettingsModel"
+      trap-focus
+      :destroy-on-hide="false"
+      aria-role="dialog"
+      aria-modal
+      :width="640" scroll="keep"
+    >
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+          <p class="modal-card-title"><b-icon icon="settings"></b-icon>&nbsp;Settings</p>
+        </header>
+        <section class="modal-card-body">
+          <!-- Application Status Bar -->
+          <div class="field">
+            <b-switch v-model="appSettings.isStatusBar"><code>ON/OFF</code> Application Status Bar (Toolbar)</b-switch>
+          </div>
+          <!-- Application Status Bar Position -->
+          <b-tooltip label="Application Status Bar Position" type="is-info" position="is-right">
+            <div class="field has-addons" v-if="appSettings.isStatusBar">
+              <b-radio-button v-model="appSettings.statusBarPosition"
+                native-value="top"
+                type="is-primary">
+                <b-icon icon="close"></b-icon>
+                <span>Top</span>
+              </b-radio-button>
+              <b-radio-button v-model="appSettings.statusBarPosition"
+                native-value="bottom"
+                type="is-success">
+                <b-icon icon="check"></b-icon>
+                <span>Bottom</span>
+              </b-radio-button>
+            </div>
+          </b-tooltip>
+        </section>
+      </div>
+    </b-modal>
+
     <!-- Site Column Settings Model -->
     <b-modal
       :active.sync="isOpenSiteColSettingsModel"
@@ -687,6 +732,13 @@ export default {
       isFullPageLoading: false,
       // Add New Site: Model
       isOpenNewSiteModel: false,
+      // Application Settings
+      isOpenNewSettingsModel: false,
+      // Application Status Bar
+      appSettings: {
+        isStatusBar: false,
+        statusBarPosition: "top",
+      },
       // Insert Site URL Data
       url: {
         index: false, // index for update data
@@ -736,6 +788,14 @@ export default {
       isModelNewVersion: true,
       releaseNotesData: [
         // Tags: NEW, ADDED, FIXED, IMPROVED
+        {
+          version: '0.1.4',
+          date: 'Wednesday, 4 November 2020',
+          desc: [
+            { tag: 'ADDED', name: 'Option to turn on/off the Toolbar feature and change toolbar postion.' },
+            { tag: 'NEW', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v014" target="_blank">Others Changelog</a>' },
+          ],
+        },
         {
           version: '0.1.2',
           date: 'Sunday, 25 October 2020',
@@ -1675,9 +1735,39 @@ export default {
       },
       deep: true,
     },
+
+    // Application Settings
+    appSettings: {
+      handler: function (newObject) {
+        this.setValueINExtensionStorage(
+          newObject,
+          "objectVal__appSettings"
+        );
+      },
+      deep: true,
+    },
   },
   created() {
     var that = this;
+
+    // Check Get Parameters in the URL `"?tab=1&update=0"`
+    var newTabIndex = false
+    if (!location.search === false) {
+      try {
+        // Check Tab Index
+        if (location.search.split("tab=").length >= 2) {
+          var tabIndex = location.search.split("tab=")[1].slice(0, 1)
+          newTabIndex = parseInt(tabIndex);
+        }
+        // Check Update Model
+        if (location.search.split("update=").length >= 2) {
+          var valueModel = location.search.split("update=")[1].slice(0, 1)
+          that.isModelNewVersion = (valueModel == 0)? false:true
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
     this.setDataINVariable("objectVal__excelSheetData", "excelSheetData");
     this.setDataINVariable("objectVal__fieldAddressExcelData", "fieldAddressExcelData");
@@ -1689,11 +1779,16 @@ export default {
     this.setDataINVariable("objectVal__siteExcelColumns", "siteExcelColumns");
     this.setDataINVariable("objectVal__excelFileSettings", "excelFileSettings");
     this.setDataINVariable("objectVal__allActionSite", "allActionSite");
+    this.setDataINVariable("objectVal__appSettings", "appSettings");
 
     // Tab Index
     chrome.storage.local.get("tabVal__activeTabIndex", function (budget) {
       if (budget.tabVal__activeTabIndex != undefined)
-        that.activeTabIndex = budget.tabVal__activeTabIndex;
+        if (newTabIndex !== false) {
+          that.activeTabIndex = newTabIndex
+          } else {
+          that.activeTabIndex = budget.tabVal__activeTabIndex;
+        }
     });
   },
 };
