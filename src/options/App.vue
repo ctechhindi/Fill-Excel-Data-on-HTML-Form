@@ -569,6 +569,7 @@
               <option value="multiple">Multiple Select (Drop-down)</option>
               <option value="checkbox">Checkbox</option>
               <option value="radio">Circle Checkbox (Radio)</option>
+              <option value="date">Date</option>
             </b-select>
           </b-field>
           <!-- Info Message Box: Multiple Checkbox -->
@@ -595,16 +596,36 @@
             <b-checkbox v-model="colSettings.check_value_with_regexp">Search Data with RegExp</b-checkbox>
           </b-field>
 
+          <!-- Only Field Type: Date -->
+          <div v-if="(['date'].indexOf(colSettings.field_type) !== -1)" style="padding-bottom: 10px;">
+            <label class="label">Convert Date Format</label>
+            <b-field>
+              <b-tooltip label="Date format of your excel sheet: DD-MM-YYYY" style="min-width: 240px;">
+                <b-input v-model="colSettings.dateOfExcel" placeholder="Date format of your excel sheet" expanded></b-input>
+              </b-tooltip>
+              <p class="control">
+                <span class="button is-static">Change To</span>
+              </p>
+              <b-tooltip label="Date format of your site: YYYY-MM-DD" style="min-width: 240px;">
+              <b-input v-model="colSettings.dateOfSite" placeholder="Date format of your site" expanded></b-input>
+              </b-tooltip>
+            </b-field>
+            <a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v015" target="_blank">Know all date format</a>
+          </div>
+
           <!-- Trigger Javascript Event  -->
-          <b-field v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
-            <p class="control">
-              <b-checkbox-button v-model="colSettings.isRunEvent" :native-value="true" type="is-dark">
-                <b-icon icon="calendar-text"></b-icon>
-                <span style="padding-right: 38px;">&nbsp; Events</span>
-              </b-checkbox-button>
-            </p>
-            <b-taginput v-show="colSettings.isRunEvent" @typing="getFilteredEvents" v-model="colSettings.js_events" :data="javascriptEventList" :open-on-focus="true" type="is-dark" style="width: 100%;" dropdown-position="top" placeholder="Search and Select Event" autocomplete></b-taginput>
-          </b-field>
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+            <label class="label">Trigger Javascript Event</label>
+            <b-field>
+              <p class="control">
+                <b-checkbox-button v-model="colSettings.isRunEvent" :native-value="true" type="is-dark">
+                  <b-icon icon="calendar-text"></b-icon>
+                  <span style="padding-right: 38px;">&nbsp; Events</span>
+                </b-checkbox-button>
+              </p>
+              <b-taginput v-show="colSettings.isRunEvent" @typing="getFilteredEvents" v-model="colSettings.js_events" :data="javascriptEventList" :open-on-focus="true" type="is-dark" style="width: 100%;" dropdown-position="top" placeholder="Search and Select Event" autocomplete></b-taginput>
+            </b-field>
+          </div>
 
           <!-- Pre-Define Keys -->
           <!-- Action Name -->
@@ -780,6 +801,9 @@ export default {
         // Js Event for Key
         isRunEvent: false,
         js_events: [], // Events Names
+        // if field type is date
+        dateOfExcel: "dd-mm-yyyy",
+        dateOfSite: "yyyy-mm-dd",
       },
       // Javascript Events
       javascriptEventList: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
@@ -1469,22 +1493,24 @@ export default {
       // Check Column Name exists in the selected action site data
       if (this.siteExcelColumns[parseInt(this.selectActionSite)][colName] !== undefined) {
         var colData = this.siteExcelColumns[parseInt(this.selectActionSite)][colName]
-        // Settings Object
-        if (!colData.settings) {
-          return false
-        }
 
-        // Settings Data
-        this.colSettings.field_type = colData.settings.field_type
-        this.colSettings.check_value_through = colData.settings.check_value_through
-        this.colSettings.check_value_with_regexp = colData.settings.check_value_with_regexp
-        this.colSettings.default_value = colData.settings.default_value
-        // Action
-        this.colSettings.action_name = colData.settings.action_name
-        this.colSettings.action_value = colData.settings.action_value
-        // Js Events
-        this.colSettings.isRunEvent = colData.settings.isRunEvent
-        this.colSettings.js_events = colData.settings.js_events
+        // if Settings Data exist in the column data and update
+        if (colData.settings !== undefined && Object.keys(colData.settings).length > 0) {
+
+          this.colSettings.field_type = colData.settings.field_type
+          this.colSettings.check_value_through = colData.settings.check_value_through
+          this.colSettings.check_value_with_regexp = colData.settings.check_value_with_regexp
+          this.colSettings.default_value = colData.settings.default_value
+          // Action
+          this.colSettings.action_name = colData.settings.action_name
+          this.colSettings.action_value = colData.settings.action_value
+          // Js Events
+          this.colSettings.isRunEvent = colData.settings.isRunEvent
+          this.colSettings.js_events = colData.settings.js_events
+          // Date Format
+          this.colSettings.dateOfExcel = colData.settings.dateOfExcel
+          this.colSettings.dateOfSite = colData.settings.dateOfSite
+        }
         
         // Open Column Settings Model
         this.isOpenSiteColSettingsModel = true
@@ -1521,6 +1547,9 @@ export default {
         // Js Events
         this.$set(colData.settings, 'isRunEvent', this.colSettings.isRunEvent)
         this.$set(colData.settings, 'js_events', this.colSettings.js_events)
+        // If field type is date
+        this.$set(colData.settings, 'dateOfExcel', this.colSettings.dateOfExcel)
+        this.$set(colData.settings, 'dateOfSite', this.colSettings.dateOfSite)
 
         this.$buefy.toast.open({
           message: `Column Settings has been successfully Saved. `,

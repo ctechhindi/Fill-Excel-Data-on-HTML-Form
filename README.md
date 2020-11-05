@@ -132,6 +132,20 @@ try {
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 
+### V.0.1.5
+
+* `NEW:` To change the Date Format of a column in Excel so that you can change the Date Format according to the Form.
+* Date Formats:
+  | Excel Column Date | Convert to this Format | Output |
+  | ----------------- | ---------------------- | --------------------- |
+  | 05-11-2020 | `DD` | 05 |
+  | 05-11-2020 | `MM` | 11 |
+  | 05-11-2020 | `YY` | 20 |
+  | 05-11-2020 | `YYYY` | 2020 |
+  | 05-11-2020 | `MM-DD-YYYY` | 11-05-2020 |
+  | 05-11-2020 | `MM/DD/YYYY` | 11/05/2020 |
+* All Date Format: https://momentjs.com/docs/#/displaying/format/
+
 ### V.0.1.4
 
 * `NEW: ` Application Settings
