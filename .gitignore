@@ -5,3 +5,4 @@
 /src/class
 /src/script
 /src/manifest.json
+plugins/javascript-files-inject.js

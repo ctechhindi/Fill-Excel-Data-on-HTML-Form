@@ -6,13 +6,21 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ## ✨ Features
 
-* Fill Automatic Excel Sheet Data in the HTML Form
-* Send Request for Insert Entry
+* Fill Automatic Excel Sheet Data in the Online Form
+* Automatic Generate Excel Sheet according to form fields
+* Send Request (GET/POST/..) for Insert Entry
+* Select the fields that depend on another field.
+* Change the format of any date and fill it in the form.
+* Run javascript event any field.
+* Automatic click form submit button
+* Insert custom javascript in the form fields
+* Provide Toolbar
+* Extension Context Menu Option
 * and more..
 
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
 
-## 🎬 [Video Tutorial](https://youtu.be/IV6yMHf2rNo)
+## 🎬 [Video Tutorial](https://www.youtube.com/playlist?list=PLmrTMUhqzS3hCXSMbmgmh71-h-kwYAQ3t)
 
 ## [Documentation](Documentation.md)
 
@@ -29,6 +37,8 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 ![](screenshot/Screenshot(143).png)
 
 ![](screenshot/Screenshot(144).png)
+
+![](screenshot/Screenshot (210).png)
 
 
 ## 🚀 Debugging
@@ -132,6 +142,13 @@ try {
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 
+### V.0.1.6
+
+* `NEW:` After filling the data of field, filling the data of another field.
+ - ![](./screenshot/after_fill_data-01.png)
+* `IMPROVE:` Automatic Generate Excel Sheet according to form fields
+* `FIXED:` Date Format in Uppercase
+
 ### V.0.1.5
 
 * `NEW:` To change the Date Format of a column in Excel so that you can change the Date Format according to the Form.
@@ -149,7 +166,7 @@ try {
 ### V.0.1.4
 
 * `NEW: ` Application Settings
-  * ![](./screenshot/fill-excel-extension-001.png)
+ - ![](./screenshot/fill-excel-extension-001.png)
 * `NEW: ` Option to turn on and off the Toolbar feature and second option to reposition it to the top or bottom of the screen.
 * `NEW: ` Check Get Parameters in the Options Page URL `"?tab=1&update=0"`
 

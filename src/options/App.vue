@@ -37,7 +37,7 @@
                     <p class="level-item">
                       <a
                         target="_blank"
-                        href="../script/demo-excel-data.xlsx"
+                        href="../assets/demo-excel-data.xlsx"
                         class="button is-info"
                       >
                         <b-icon icon="file-excel"></b-icon>
@@ -583,6 +583,7 @@
           <!-- Field: Select Option with Drop-down value/name -->
           <b-field label="How to fill the data in this Field" v-if="(['select', 'multiple'].indexOf(colSettings.field_type) !== -1)">
             <b-select placeholder="Type" v-model="colSettings.check_value_through" expanded>
+              <option value="">Through of Name/Value</option>
               <option value="name">Through of Name</option>
               <option value="value">Through of Value</option>
             </b-select>
@@ -614,7 +615,7 @@
           </div>
 
           <!-- Trigger Javascript Event  -->
-          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1" style="padding-bottom: 10px;">
             <label class="label">Trigger Javascript Event</label>
             <b-field>
               <p class="control">
@@ -624,6 +625,20 @@
                 </b-checkbox-button>
               </p>
               <b-taginput v-show="colSettings.isRunEvent" @typing="getFilteredEvents" v-model="colSettings.js_events" :data="javascriptEventList" :open-on-focus="true" type="is-dark" style="width: 100%;" dropdown-position="top" placeholder="Search and Select Event" autocomplete></b-taginput>
+            </b-field>
+          </div>
+
+          <!-- After filling the data of this field, filling the data of another field. -->
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+            <label class="label">After filling the data of this field, filling the data of another field</label>
+            <b-field>
+              <p class="control">
+                <b-checkbox-button v-model="colSettings.isAfterFillFields" :native-value="true" type="is-warning">
+                  <b-icon icon="file-excel"></b-icon>
+                  <span style="padding-right: 38px;" title="Excel Sheet Column Name">&nbsp; Column Name</span>
+                </b-checkbox-button>
+              </p>
+              <b-taginput v-show="colSettings.isAfterFillFields" v-model="colSettings.afterFillFields" type="is-warning" style="width: 100%;" placeholder="Enter Excel Sheet Column Name"></b-taginput>
             </b-field>
           </div>
 
@@ -802,8 +817,11 @@ export default {
         isRunEvent: false,
         js_events: [], // Events Names
         // if field type is date
-        dateOfExcel: "dd-mm-yyyy",
-        dateOfSite: "yyyy-mm-dd",
+        dateOfExcel: "DD-MM-YYYY",
+        dateOfSite: "YYYY-mm-DD",
+        // After filling the data of this field, filling the data of another field
+        isAfterFillFields: false,
+        afterFillFields: [],
       },
       // Javascript Events
       javascriptEventList: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
@@ -812,6 +830,16 @@ export default {
       isModelNewVersion: true,
       releaseNotesData: [
         // Tags: NEW, ADDED, FIXED, IMPROVED
+        {
+          version: '0.1.6',
+          date: 'Tuesday, 10 November 2020',
+          desc: [
+            { tag: 'IMPROVED', name: 'Automatic Generate Excel Sheet according to form fields' },
+            { tag: 'NEW', name: 'After filling the data of field, filling the data of another field.' },
+            { tag: 'NEW', name: 'To change the Date Format of a column in Excel so that you can change the Date Format according to the Form.' },
+            { tag: 'NEW', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v016" target="_blank">Others Changelog</a>' },
+          ],
+        },
         {
           version: '0.1.4',
           date: 'Wednesday, 4 November 2020',
@@ -1068,12 +1096,12 @@ export default {
                   // Update Column Settings
                   fetchedCol["settings"]["field_type"] = "select"
                   // Select Option with Drop-down value/name
-                  fetchedCol["settings"]["check_value_through"] = "value"
+                  fetchedCol["settings"]["check_value_through"] = ""
                 } else if (keysObject.field === "select" && keysObject.fieldType === "multiple") {
                   // Update Column Settings: Field Type
                   fetchedCol["settings"]["field_type"] = "multiple"
                   // Select Option with Drop-down value/name
-                  fetchedCol["settings"]["check_value_through"] = "value"
+                  fetchedCol["settings"]["check_value_through"] = ""
                 }
               }
 
@@ -1496,7 +1524,6 @@ export default {
 
         // if Settings Data exist in the column data and update
         if (colData.settings !== undefined && Object.keys(colData.settings).length > 0) {
-
           this.colSettings.field_type = colData.settings.field_type
           this.colSettings.check_value_through = colData.settings.check_value_through
           this.colSettings.check_value_with_regexp = colData.settings.check_value_with_regexp
@@ -1510,6 +1537,27 @@ export default {
           // Date Format
           this.colSettings.dateOfExcel = colData.settings.dateOfExcel
           this.colSettings.dateOfSite = colData.settings.dateOfSite
+          // After filling the data of this field, filling the data of another field.
+          this.colSettings.isAfterFillFields = colData.settings.isAfterFillFields
+          this.colSettings.afterFillFields = colData.settings.afterFillFields
+        } else {
+          // Rest Variables old Data
+          this.colSettings.field_type = "text"
+          this.colSettings.check_value_through = "name"
+          this.colSettings.check_value_with_regexp = false
+          this.colSettings.default_value = ""
+          // Action
+          this.colSettings.action_name = ""
+          this.colSettings.action_value = ""
+          // Js Events
+          this.colSettings.isRunEvent = false
+          this.colSettings.js_events = []
+          // Date Format
+          this.colSettings.dateOfExcel = "DD-MM-YYYY"
+          this.colSettings.dateOfSite = "YYYY-mm-DD"
+          // After filling the data of this field, filling the data of another field.
+          this.colSettings.isAfterFillFields = false
+          this.colSettings.afterFillFields = []
         }
         
         // Open Column Settings Model
@@ -1550,6 +1598,9 @@ export default {
         // If field type is date
         this.$set(colData.settings, 'dateOfExcel', this.colSettings.dateOfExcel)
         this.$set(colData.settings, 'dateOfSite', this.colSettings.dateOfSite)
+        // After filling the data of this field, filling the data of another field
+        this.$set(colData.settings, 'isAfterFillFields', this.colSettings.isAfterFillFields)
+        this.$set(colData.settings, 'afterFillFields', this.colSettings.afterFillFields)
 
         this.$buefy.toast.open({
           message: `Column Settings has been successfully Saved. `,

@@ -1,0 +1,134 @@
+/* Selection HTML Element */
+.el-selection {
+  outline: #ef0e20 solid 4px;
+}
+
+/* Element Value Show: List, Checkbox and Radio */
+.element-value {
+  background-color: #d81414;
+  color: white;
+  padding: 1px 6px 2px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+/* Element Name Show: List */
+.element-name {
+  /* background-color: rgb(47 123 22);
+  color: white;
+  padding: 1px 6px 2px;
+  border-radius: 5px;
+  margin-right: 5px; */
+}
+
+/* 
+  Toolbar Style 
+*/
+#fillExcel-Toolbar * {
+  min-width: 0px !important;
+  min-height: 0px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+#fillExcel-Toolbar {
+  position: fixed;
+  width: 100%;
+  box-shadow: rgb(51, 51, 51) 0px 2px 4px;
+  cursor: default;
+  display: block;
+  font-size: medium;
+  text-align: left;
+  transform: translate3d(0px, -150%, 0px);
+  user-select: none;
+  z-index: 2147483647;
+  background: linear-gradient(rgb(187 173 175), rgb(199 172 179) 40%, rgb(193 187 190));
+  border-bottom: 1px solid rgb(182, 186, 192);
+  overflow: hidden;
+  transition: transform 0.3s ease 0s;
+}
+
+.fillExcel-Toolbar-Bottom {
+  top: auto;
+  left: 0px;
+  bottom: 0px;
+}
+
+.fillExcel-Toolbar-Top {
+  top: 0px;
+  left: 0px;
+  bottom: auto;
+}
+
+#fillExcel-Toolbar #fillExcel-closeToolBar {
+  position: absolute !important;
+  top: 0px !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 0px !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEX///8FBQUGBgYDAwMDAwMDAwMGBgYGBgYFBQUAAAAFBQUAAAAEBAQDAwMDAwMDAwMDAwMDAwMAAABMcPQTAAAAE3RSTlMACwsPERIzNzk9PUZGSUxNT1dZm90FQAAAAFlJREFUGFedjEsOwCAIRFWoUvx7/8NWTLHdtrMgeS/DGPMvA+UeY3NLMLnXeAtMxIC9sNUKcOCc2SkvQ/Rig5m83w+yJ4Lg4cLOUmA1o8re3Dm1Etc7bP6YC1LBAmMNPdFwAAAAAElFTkSuQmCC) no-repeat !important;
+  font: inherit !important;
+  margin: 10px 6px !important;
+  padding: 5px !important;
+}
+
+#fillExcel-Toolbar table {
+  width: calc(100% - 28px) !important;
+  border-collapse: collapse !important;
+  background: none !important;
+  border-width: 0px !important;
+  border-style: initial !important;
+  border-color: initial !important;
+  border-image: initial !important;
+  margin: 0px !important;
+}
+
+#fillExcel-Toolbar table td:first-child {
+  width: 48px !important;
+  min-width: 48px !important;
+}
+
+#fillExcel-Toolbar table td {
+  vertical-align: top !important;
+  padding: 5px !important;
+}
+
+#fillExcel-Toolbar span {
+  height: 36px !important;
+  display: inline-block !important;
+  margin-right: 10px !important;
+  white-space: nowrap !important;
+  font: 90% Tahoma, sans-serif !important;
+}
+
+#fillExcel-Toolbar button, #fillExcel-Toolbar span {
+  box-shadow: none !important;
+  color: rgb(0, 0, 0) !important;
+  cursor: default !important;
+  display: inline !important;
+  letter-spacing: normal !important;
+  line-height: 1 !important;
+  text-align: -webkit-auto !important;
+  text-indent: 0px !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  word-spacing: normal !important;
+  vertical-align: baseline !important;
+  margin: 0px !important;
+  text-decoration: none !important;
+}
+
+#fillExcel-Toolbar button {
+  width: auto !important;
+  height: 24px !important;
+  background: linear-gradient(rgb(169 182 197), rgb(134 185 247) 40%, rgb(204, 219, 239)) !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: rgb(119, 130, 144) !important;
+  border-image: initial !important;
+  border-radius: 3px !important;
+  font: 400 13.3333px Arial !important;
+  padding: 0px 0.5em !important;
+}

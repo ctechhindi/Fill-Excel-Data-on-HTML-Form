@@ -5,6 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
+const JavascriptFilesInject = require("./plugins/javascript-files-inject.js");
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -14,6 +15,15 @@ const config = {
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js',
     'request/request': './request/request.js',
+    'script/run': './script/run.js',
+    'script/root': './script/root.js',
+    'script/copy_element': './script/copy_element.js',
+    'script/fetch_form_fields': './script/fetch_form_fields.js',
+    'script/onload': './script/onload.js',
+    'script/selector-generator': './script/selector-generator.js',
+    // Temp Scripts
+    'temp/script1': './script/run_2.js',
+    'temp/script2': './script/templates/run_2-template.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -78,7 +88,6 @@ const config = {
     new CopyPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
       { from: 'assets', to: 'assets'},
-      { from: 'script', to: 'script'},
       { from: 'css', to: 'css'},
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
       { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
@@ -98,6 +107,12 @@ const config = {
         },
       },
     ]),
+    new JavascriptFilesInject({
+      scriptFile: "script/run_2.js",
+      templateFile: "script/templates/run_2-template.js",
+      outputFile: __dirname + '/dist/script/inject-run.js',
+      minify: true,
+    })
   ]
 };
 
