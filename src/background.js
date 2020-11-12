@@ -2,6 +2,64 @@ global.browser = require('webextension-polyfill')
 const Excel = require("exceljs"); // https://github.com/exceljs/exceljs
 import { saveAs } from 'file-saver';
 
+function checkTabURLMatch(tabId, tabURL) {
+
+  // Action Page Settings
+  var actionURLs = "objectVal__allActionSite";
+  // Site Excel Columns
+  var siteColumns = "objectVal__siteExcelColumns";
+  // Excel JSON Data
+  var excelJSONData = "objectVal__excelSheetJSONData";
+
+  // Get Data
+  chrome.storage.local.get([actionURLs, excelJSONData, siteColumns], function (k) {
+    if (k[actionURLs] !== undefined && k[actionURLs] !== null) {
+      var url = k[actionURLs];
+      if (url !== null && url.length > 0) {
+
+        // console.log("Tab Option: ", tab)
+        // console.log("Action URLs", url)
+
+        // Site Excel Column Data
+        if (k[siteColumns] !== undefined && k[siteColumns] !== null && siteColumns.length > 0) {
+          // Excel JSON Data
+          if (k[excelJSONData] !== undefined && k[excelJSONData] !== null && Object.keys(k[excelJSONData]).length > 0) {
+            var excelJSONObj = k[excelJSONData];
+            if (excelJSONObj.obj !== undefined && excelJSONObj.obj.length > 0) {
+
+              // Execute Script
+              chrome.tabs.executeScript(tabId, {
+                file: '/script/run.js',
+              }, function () {
+                if (chrome.runtime.lastError) {
+                  console.error(chrome.runtime.lastError.message);
+                }
+              });
+
+            } else {
+              console.error("Excel JSON Data Not Found!");
+            }
+
+          } else {
+            console.error("Excel JSON Object Not Found!");
+          }
+
+        } else {
+          console.error("Action Site Excel Columns Data Not Found.");
+        }
+
+      } else {
+        console.error("Action URL Key Not Found");
+      }
+    } else {
+      console.error("Action URLs Key Not Found");
+    }
+  });
+}
+
+/**
+ * If click extension icon
+ */
 chrome.browserAction.onClicked.addListener(function (a) {
   chrome.windows.getCurrent(function (a) {
     parentWindowId = a.id
@@ -11,59 +69,55 @@ chrome.browserAction.onClicked.addListener(function (a) {
   window.open(chrome.extension.getURL("popup/popup.html?tabid=" + encodeURIComponent(a.id) + "&url=" + encodeURIComponent(a.url)), "Excel Fill", "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=660,height=1040,top=0,left=960")
 });
 
+/**
+ * App Status Check :: checkbox value get
+ */
+function appStatusCheck() {
+  chrome.storage.local.get('valFillExcel_appStatus', function (budget) {
+    if (budget.valFillExcel_appStatus === undefined) {
+      chrome.browserAction.setIcon({ path: "icons/icon_48.png" });
+    } else {
+      if (budget.valFillExcel_appStatus === true) {
+        chrome.browserAction.setIcon({ path: "icons/icon_48.png" });
+      } else {
+        chrome.browserAction.setIcon({ path: "icons/icon_disable.png" });
+      }
+    }
+  });
+} appStatusCheck();
+
+/**
+ * keyboard shortcuts that trigger actions in your extension
+ */
+chrome.commands.onCommand.addListener(function (command, tab) {
+  // console.log("TCL: command", command)
+  // console.log("tab", tab)
+  // console.log("tab", tab.url)
+
+  // Start/Pause Application
+  if (command == "start-stop-app-excel-fill") {
+    chrome.storage.local.get('valFillExcel_appStatus', function (budget) {
+      if (budget.valFillExcel_appStatus === true) {
+        chrome.storage.local.set({ 'valFillExcel_appStatus': false });
+      }
+      else {
+        chrome.storage.local.set({ 'valFillExcel_appStatus': true });
+        // Again RUN Script (Again Fill Form Data)
+        checkTabURLMatch(tab.id, tab.url)
+      }
+      appStatusCheck();
+    });
+  }
+});
+
+/**
+ * Tabs
+ */
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
 
-    // Action Page Settings
-    var actionURLs = "objectVal__allActionSite";
-    // Site Excel Columns
-    var siteColumns = "objectVal__siteExcelColumns";
-    // Excel JSON Data
-    var excelJSONData = "objectVal__excelSheetJSONData";
-
-    // Get Data
-    chrome.storage.local.get([actionURLs, excelJSONData, siteColumns], function (k) {
-      if (k[actionURLs] !== undefined && k[actionURLs] !== null) {
-        var url = k[actionURLs];
-        if (url !== null && url.length > 0) {
-          // console.log("Tab Option: ", tab)
-          // console.log("Action URLs", url)
-
-          // Site Excel Column Data
-          if (k[siteColumns] !== undefined && k[siteColumns] !== null && siteColumns.length > 0) {
-            // Excel JSON Data
-            if (k[excelJSONData] !== undefined && k[excelJSONData] !== null && Object.keys(k[excelJSONData]).length > 0) {
-              var excelJSONObj = k[excelJSONData];
-              if (excelJSONObj.obj !== undefined && excelJSONObj.obj.length > 0) {
-
-                // Execute Script
-                chrome.tabs.executeScript(tabId, {
-                  file: '/script/run.js',
-                }, function () {
-                  if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError.message);
-                  }
-                });
-
-              } else {
-                console.error("Excel JSON Data Not Found!");
-              }
-
-            } else {
-              console.error("Excel JSON Object Not Found!");
-            }
-
-          } else {
-            console.error("Action Site Excel Columns Data Not Found.");
-          }
-
-        } else {
-          console.error("Action URL Key Not Found");
-        }
-      } else {
-        console.error("Action URLs Key Not Found");
-      }
-    });
+    // Check URL Than RUN Script
+    checkTabURLMatch(tab.id, tab.url)
   }
 });
 
@@ -225,9 +279,9 @@ function onCopyElement(option, tab) {
               sheetDoc.getCell(cellAddress).font = { family: 4, size: 11, bold: true };
               // Set cell to wrap-text
               sheetDoc.getCell(cellAddress).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-            }            
+            }
           }
-          
+
           // Second Sheet: Second Row for field value
           if (field.value !== undefined) {
             if (typeof (field.value) === "object" && field.value.length > 0) {
@@ -250,7 +304,7 @@ function onCopyElement(option, tab) {
                   startRow++
                 });
               }
-              
+
             } else {
               const row = sheetDoc.getRow(2);
               row.getCell(fieldKey).value = field.value

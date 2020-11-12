@@ -142,6 +142,12 @@ try {
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 
+### V.0.1.7
+
+* Typewriter Effect and Set Typewriter Speed while filling data in the field
+* Start/Pause Application With `Alt+Q`
+* `FIXED:` Column Settings Model Not Open
+
 ### V.0.1.6
 
 * `NEW:` After filling the data of field, filling the data of another field.

@@ -163,8 +163,8 @@
                 </td>
                 <td style="font-size: small;">{{ data.successMsg }}</td>
                 <td style="text-align: right;">
-                  <b-button type="is-info" title="Edit Site Information" icon-left="pencil" @click="editSiteInformation(index)"></b-button>
-                  <b-button type="is-danger" title="Delete Site Information" icon-left="delete" @click="deleteSiteInformation(index)"></b-button>
+                  <b-button size="is-small" type="is-info" title="Edit Site Information" icon-left="pencil" @click="editSiteInformation(index)"></b-button>
+                  <b-button size="is-small" type="is-danger" title="Delete Site Information" icon-left="delete" @click="deleteSiteInformation(index)"></b-button>
                 </td>
               </tr>
             </tbody>
@@ -216,33 +216,33 @@
                   </td>
                   <td>
                     <span
-                      v-if="index === 'form_filled'"
+                      v-if="data.key === 'form_filled'"
                       title="After the form is successful feeded, you can give what script you want to run."
                     >
-                      <code>{{ index }}</code>
+                      <code :title="index">{{ data.key }}</code>
                     </span>
                     <span
-                      v-else-if="index === 'entry_saved'"
+                      v-else-if="data.key === 'entry_saved'"
                       title="After the form is successful submit, you can give what script you want to run."
                     >
-                      <code>{{ index }}</code>
+                      <code :title="index">{{ data.key }}</code>
                     </span>
                     <span
-                      v-else-if="index === 'page_loaded'"
+                      v-else-if="data.key === 'page_loaded'"
                       title="After the page is fully loaded, you can give your Custom Script."
                     >
-                      <code>{{ index }}</code>
+                      <code :title="index">{{ data.key }}</code>
                     </span>
                     <span
-                      v-else-if="index === 'fill_action'"
+                      v-else-if="data.key === 'fill_action'"
                       title="If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page."
                     >
-                      <code>{{ index }}</code>
+                      <code :title="index">{{ data.key }}</code>
                     </span>
-                    <span v-else>{{ index }}</span>
+                    <span v-else :title="index">{{ data.key }}</span>
                   </td>
                   <td style="width: 250px;">
-                    <b-field v-if="['page_loaded'].indexOf(index) < 0">
+                    <b-field v-if="['page_loaded'].indexOf(data.key) < 0">
                       <b-select
                         v-model="data.element_type"
                         placeholder="Select element type"
@@ -257,13 +257,13 @@
                   <td>
                     <b-field>
                       <b-input
-                        v-if="['page_loaded'].indexOf(index) < 0"
+                        v-if="['page_loaded'].indexOf(data.key) < 0"
                         v-model="data.element"
                         placeholder="Enter element"
                       ></b-input>
                     </b-field>
                     <b-tooltip
-                      v-if="['fill_action', 'form_filled', 'entry_saved'].indexOf(index) !== -1"
+                      v-if="['fill_action', 'form_filled', 'entry_saved'].indexOf(data.key) !== -1"
                       label="Set HTML Element Event Type"
                       position="is-top"
                     >
@@ -301,15 +301,16 @@
                       </b-field>
                     </b-tooltip>
                   </td>
-                  <td style="width: 120px;">
+                  <td style="width: 110px;">
                     <div class="field">
                       <b-switch
                         v-model="data.is_runJScript"
                         type="is-success"
+                        size="is-small"
                       >{{ (data.is_runJScript === true)? "Yes":"No" }}</b-switch>
                     </div>
                   </td>
-                  <td style="width: 145px; text-align: right;">
+                  <td style="width: 130px; text-align: right;">
                     <b-tooltip
                       :type="(data.is_runJScript == true)? 'is-success':'is-warning'"
                       label="Insert JS Script"
@@ -317,18 +318,20 @@
                       <b-button
                         :type="(data.is_runJScript == true)? 'is-success':'is-warning'"
                         icon-left="nodejs"
+                        size="is-small"
                         @click="openScriptModel(index)"
                       ></b-button>
                     </b-tooltip>&nbsp;
                     <b-tooltip label="Column Settings">
                       <b-button
                         type="is-primary"
+                        size="is-small"
                         icon-left="settings"
                         @click="openColumnSettingsModel(index)"
                       ></b-button>
                     </b-tooltip>&nbsp;
                     <b-tooltip type="is-danger" label="Delete Column">
-                      <b-button type="is-danger" icon-left="delete" @click="deleteColumnData(index)"></b-button>
+                      <b-button type="is-danger" size="is-small" icon-left="delete" @click="deleteColumnData(index)"></b-button>
                     </b-tooltip>
                   </td>
                 </tr>
@@ -530,7 +533,7 @@
           </div>
           <!-- Application Status Bar Position -->
           <b-tooltip label="Application Status Bar Position" type="is-info" position="is-right">
-            <div class="field has-addons" v-if="appSettings.isStatusBar">
+            <div class="field has-addons" v-if="appSettings.isStatusBar" style="padding-bottom: 20px;">
               <b-radio-button v-model="appSettings.statusBarPosition"
                 native-value="top"
                 type="is-primary">
@@ -545,6 +548,26 @@
               </b-radio-button>
             </div>
           </b-tooltip>
+
+          <!-- Typewriter Speed -->
+          <b-field label="Set Typewriter Effect Speed Range (milliseconds)">
+            <p class="control">
+              <span class="button is-static">Minimum</span>
+            </p>
+            <b-input type="number" v-model="appSettings.typeWriterMinSpeed" placeholder="Minimum Milliseconds of Typewriter" expanded></b-input>
+            <p class="control">
+              <span class="button is-static" style="background-color: #006177fc;color: white;">milliseconds (1000 milliseconds = 1 seconds)</span>
+            </p>
+          </b-field>
+          <b-field>
+            <p class="control">
+              <span class="button is-static">Maximum</span>
+            </p>
+            <b-input type="number" v-model="appSettings.typeWriterMaxSpeed" placeholder="Maximum Milliseconds of Typewriter" expanded></b-input>
+            <p class="control">
+              <span class="button is-static" style="background-color: #006177fc;color: white;">milliseconds (1000 milliseconds = 1 seconds)</span>
+            </p>
+          </b-field>
         </section>
       </div>
     </b-modal>
@@ -557,12 +580,12 @@
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head" style="border-bottom: 0px solid #dbdbdb; border-radius: 0px;">
           <p>Column Settings:&nbsp;</p>
-          <span v-if="activeSiteColName !== null" class="tag is-danger">{{ activeSiteColName }}</span>
+          <span v-if="activeSiteColNameOrignal !== null" class="tag is-danger" :title="activeSiteColName">{{ activeSiteColNameOrignal }}</span>
         </header>
         <section class="modal-card-body">
           <!-- This Field Type use fetchColInExcelData() function -->
           <!-- Field Type: text, select, file, checkbox, radio, multi-select, textarea -->
-          <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+          <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1">
             <b-select placeholder="Select Field Type" v-model="colSettings.field_type" expanded>
               <option value="text">Text</option>
               <option value="select">Select (Drop-down)</option>
@@ -589,7 +612,7 @@
             </b-select>
           </b-field>
           <!-- If excel column value is empty then fill this default value -->
-          <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1" expanded>
+          <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1" expanded>
             <b-input v-model="colSettings.default_value" placeholder="Enter Field Deafult Value"></b-input>
           </b-field>
           <!-- Field: Select Option with RegExp -->
@@ -615,7 +638,7 @@
           </div>
 
           <!-- Trigger Javascript Event  -->
-          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1" style="padding-bottom: 10px;">
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1" style="padding-bottom: 10px;">
             <label class="label">Trigger Javascript Event</label>
             <b-field>
               <p class="control">
@@ -629,7 +652,7 @@
           </div>
 
           <!-- After filling the data of this field, filling the data of another field. -->
-          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColName) == -1">
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1">
             <label class="label">After filling the data of this field, filling the data of another field</label>
             <b-field>
               <p class="control">
@@ -644,7 +667,7 @@
 
           <!-- Pre-Define Keys -->
           <!-- Action Name -->
-          <b-field label="If Entry Saved Then Run Action" v-if="['entry_saved'].indexOf(activeSiteColName) !== -1">
+          <b-field label="If Entry Saved Then Run Action" v-if="['entry_saved'].indexOf(activeSiteColNameOrignal) !== -1">
             <b-select placeholder="Select Action" v-model="colSettings.action_name" expanded>
               <option value="redirect">Redirect to Another Page</option>
             </b-select>
@@ -774,6 +797,9 @@ export default {
       appSettings: {
         isStatusBar: false,
         statusBarPosition: "top",
+        // Typewriter Speed
+        typeWriterMinSpeed: 1,
+        typeWriterMaxSpeed: 5,
       },
       // Insert Site URL Data
       url: {
@@ -794,6 +820,7 @@ export default {
       isOpenSiteColSettingsModel: false,
       // Active Site Column Name
       activeSiteColName: null,
+      activeSiteColNameOrignal: null,
       /**
        * Model: Column Settings Data
        *---- If update then update in these functions -----
@@ -831,35 +858,16 @@ export default {
       releaseNotesData: [
         // Tags: NEW, ADDED, FIXED, IMPROVED
         {
-          version: '0.1.6',
-          date: 'Tuesday, 10 November 2020',
+          version: '0.1.7',
+          date: 'Thursday, 12 November 2020',
           desc: [
-            { tag: 'IMPROVED', name: 'Automatic Generate Excel Sheet according to form fields' },
-            { tag: 'NEW', name: 'After filling the data of field, filling the data of another field.' },
-            { tag: 'NEW', name: 'To change the Date Format of a column in Excel so that you can change the Date Format according to the Form.' },
-            { tag: 'NEW', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v016" target="_blank">Others Changelog</a>' },
+            { tag: 'IMPROVED', name: 'If your data is not able to feed after this update, then fetch the Excel column again.' },
+            { tag: 'NEW', name: 'Typewriter Effect and Set Typewriter Speed while filling data in the field' },
+            { tag: 'NEW', name: 'Start/Pause Application With <code>Alt+Q</code>' },
+            { tag: 'ADDED', name: '<a href="https://www.youtube.com/playlist?list=PLmrTMUhqzS3hCXSMbmgmh71-h-kwYAQ3t" target="_blank">💻 Video Tutorial - Playlist</a>' },
+            { tag: 'ADDED', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v017" target="_blank">Others Changelog</a>' },
           ],
-        },
-        {
-          version: '0.1.4',
-          date: 'Wednesday, 4 November 2020',
-          desc: [
-            { tag: 'ADDED', name: 'Option to turn on/off the Toolbar feature and change toolbar postion.' },
-            { tag: 'NEW', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v014" target="_blank">Others Changelog</a>' },
-          ],
-        },
-        {
-          version: '0.1.2',
-          date: 'Sunday, 25 October 2020',
-          desc: [
-            { tag: 'ADDED', name: '<a href="https://youtu.be/YQjNpHHdYvo" target="_blank">💻 Video Tutorial</a>' },
-            { tag: 'NEW', name: 'Add Support Page' },
-            { tag: 'NEW', name: 'Show Total Entry and Active Entry Number in the Toolbar' },
-            { tag: 'NEW', name: 'If are you using generate excel method then field address and field settings (field type) data automatic set.' },
-            { tag: 'FIXED', name: 'Some excel sheet columns data not fetch in the extension options page.' },
-            { tag: 'IMPROVED', name: 'Extension Context Menu Option' },
-          ],
-        },
+        }
       ]
     };
   },
@@ -909,6 +917,16 @@ export default {
       } catch (e) {
         console.error("Caught", e);
       }
+    },
+
+    /**
+     * Output numbers with leading zeros
+     * @param {*} num 
+     * @param {*} places 
+     */
+    zeroPad(num, places) {
+      var zero = places - num.toString().length + 1;
+      return Array(+(zero > 0 && zero)).join("0") + num;
     },
 
     /**
@@ -1068,8 +1086,11 @@ export default {
 
       // First Sheet Columns Name
       var col = {};
-      excelColumns.forEach((item) => {
-        if (this.siteExcelColumns[parseInt(this.selectActionSite)][item] === undefined) {
+      excelColumns.forEach((item, index) => {
+        var indexKey = this.zeroPad(index, 5)
+        var objeKey = indexKey + "_" + item;
+
+        if (this.siteExcelColumns[parseInt(this.selectActionSite)][objeKey] === undefined) {
           var fetchedCol = {
             key: item,
             element_type: "id", // id, querySelector
@@ -1114,10 +1135,12 @@ export default {
           }
 
           // Push Column Data
-          col[item] = fetchedCol
+          this.$set(col, objeKey, fetchedCol)
+          // col[objeKey] = fetchedCol
 
         } else {
-          col[item] = this.siteExcelColumns[parseInt(this.selectActionSite)][item]
+          this.$set(col, objeKey, this.siteExcelColumns[parseInt(this.selectActionSite)][objeKey])
+          // col[objeKey] = this.siteExcelColumns[parseInt(this.selectActionSite)][objeKey]
         }
       });
 
@@ -1142,30 +1165,44 @@ export default {
         },
         trapFocus: true,
         onConfirm: (value) => {
-          if (this.siteExcelColumns[parseInt(this.selectActionSite)][value] === undefined) {
-            var newCol = {
-              key: value,
-              element_type: "id",
-              event_type: "click", // Only for this key `fill_action`
-              element: "",
-              jscript: "",
-              is_runJScript: false,
-              is_active: true,
-              // Column Settings
-              settings: {},
-            };
+          if (typeof(this.siteExcelColumns[parseInt(this.selectActionSite)]) === "object") {
+            var length = Object.keys(this.siteExcelColumns[parseInt(this.selectActionSite)]).length
+            if (length === 0) { var index = 0 } else { var index = length }
 
-            // Set New Column in the Object
-            this.$set(this.siteExcelColumns[parseInt(this.selectActionSite)], value, newCol);
+            // KEY NAME: 00000_{key_name}
+            var indexKey = this.zeroPad(index, 5)
+            var objeKey = indexKey + "_" + value;
 
-            // Push New Column in the Excel Data
-            this.pushNewColumnInExcelData(value);
+            // Fetch Only key name, remove first 6 characters
+            var onlyKeyName = Object.keys(this.siteExcelColumns[parseInt(this.selectActionSite)]).map((item) => { return item.slice(6) })
+            // Check Key name in this array
+            if (onlyKeyName.indexOf(value) === -1) {
+              var newCol = {
+                key: value,
+                element_type: "id",
+                event_type: "click", // Only for this key `fill_action`
+                element: "",
+                jscript: "",
+                is_runJScript: false,
+                is_active: true,
+                // Column Settings
+                settings: {},
+              };
+
+              // Set New Column in the Object
+              this.$set(this.siteExcelColumns[parseInt(this.selectActionSite)], objeKey, newCol);
+
+              // Push New Column in the Excel Data
+              this.pushNewColumnInExcelData(value);
+            } else {
+              this.$buefy.toast.open({
+                message: `This column already exists in the excel data.`,
+                position: "is-bottom",
+                type: "is-danger",
+              });
+            }
           } else {
-            this.$buefy.toast.open({
-              message: `This column already exists in the excel data.`,
-              position: "is-bottom",
-              type: "is-danger",
-            });
+            console.error("Invalid Columns Variable Data Type.");
           }
         },
       });
@@ -1514,7 +1551,7 @@ export default {
      */
     openColumnSettingsModel(colName) {
       // Check Selected Action Site Index
-      if (parseInt(this.selectActionSite) > 0) {
+      if (parseInt(this.selectActionSite) < 0) {
         return false
       }
 
@@ -1564,6 +1601,8 @@ export default {
         this.isOpenSiteColSettingsModel = true
         // Set Active Column Name
         this.activeSiteColName = colName
+        // remove first 6 characters
+        this.activeSiteColNameOrignal = colName.slice(6)
       }
       return false
     },
