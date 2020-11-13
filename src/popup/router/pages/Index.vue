@@ -30,7 +30,7 @@
                 <i class="mdi mdi-cursor-default"></i>
               </a>
             </td>
-            <td>{{ index }}</td>
+            <td :title="index">{{ data.key }}</td>
             <td style="width: 200px;">
               <b-field>
                 <b-select

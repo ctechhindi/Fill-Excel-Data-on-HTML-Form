@@ -141,10 +141,20 @@ try {
 * If excel data successful fill in the form then play sound like
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
+* Not Work in the Google Form
+
+### V.0.1.8
+
+* `NEW: ` Change Field Background color of fill data completed in the form field.
+  - ![](./screenshot/field_bg_color.png)
+* `FIXED:` if name attribute not found in the form field then also generate excel sheet.
+* `FIXED:` Field name in the Extension Popup Page
+* `FIXED:` If form submit then redirect not working.
 
 ### V.0.1.7
 
 * Typewriter Effect and Set Typewriter Speed while filling data in the field
+  - ![](./screenshot/typewriter-effect.png)
 * Start/Pause Application With `Alt+Q`
 * `FIXED:` Column Settings Model Not Open
 

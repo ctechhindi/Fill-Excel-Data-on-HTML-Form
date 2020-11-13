@@ -2,6 +2,11 @@ global.browser = require('webextension-polyfill')
 const Excel = require("exceljs"); // https://github.com/exceljs/exceljs
 import { saveAs } from 'file-saver';
 
+/**
+ * Run Fill Data Script if data is valid
+ * @param {*} tabId 
+ * @param {*} tabURL 
+ */
 function checkTabURLMatch(tabId, tabURL) {
 
   // Action Page Settings
@@ -66,7 +71,7 @@ chrome.browserAction.onClicked.addListener(function (a) {
   });
 
   // Parse: Table ID and URL
-  window.open(chrome.extension.getURL("popup/popup.html?tabid=" + encodeURIComponent(a.id) + "&url=" + encodeURIComponent(a.url)), "Excel Fill", "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=660,height=1040,top=0,left=960")
+  window.open(chrome.extension.getURL("popup/popup.html?tabid=" + encodeURIComponent(a.id) + "&url=" + encodeURIComponent(a.url)), "Excel Fill", "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=1040,top=0,left=960")
 });
 
 /**

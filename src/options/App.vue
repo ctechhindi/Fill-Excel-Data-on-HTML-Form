@@ -559,7 +559,7 @@
               <span class="button is-static" style="background-color: #006177fc;color: white;">milliseconds (1000 milliseconds = 1 seconds)</span>
             </p>
           </b-field>
-          <b-field>
+          <b-field style="padding-bottom: 20px;">
             <p class="control">
               <span class="button is-static">Maximum</span>
             </p>
@@ -567,6 +567,14 @@
             <p class="control">
               <span class="button is-static" style="background-color: #006177fc;color: white;">milliseconds (1000 milliseconds = 1 seconds)</span>
             </p>
+          </b-field>
+
+          <!-- Change the background color of the data filled field. -->
+          <div class="field">
+            <b-switch v-model="appSettings.isFieldBgColor"><code>ON/OFF</code> Change the background color of the data filled field</b-switch>
+          </div>
+          <b-field v-if="appSettings.isFieldBgColor">
+            <b-input type="color" v-model="appSettings.fieldBgColor" expanded></b-input>
           </b-field>
         </section>
       </div>
@@ -800,6 +808,9 @@ export default {
         // Typewriter Speed
         typeWriterMinSpeed: 1,
         typeWriterMaxSpeed: 5,
+        // Change the background color of the data filled field.
+        isFieldBgColor: false,
+        fieldBgColor: "",
       },
       // Insert Site URL Data
       url: {
@@ -858,14 +869,16 @@ export default {
       releaseNotesData: [
         // Tags: NEW, ADDED, FIXED, IMPROVED
         {
-          version: '0.1.7',
+          version: '0.1.7 - 0.1.8',
           date: 'Thursday, 12 November 2020',
           desc: [
             { tag: 'IMPROVED', name: 'If your data is not able to feed after this update, then fetch the Excel column again.' },
             { tag: 'NEW', name: 'Typewriter Effect and Set Typewriter Speed while filling data in the field' },
+            { tag: 'NEW', name: 'Change Field Background color of fill data completed in the form field.' },
             { tag: 'NEW', name: 'Start/Pause Application With <code>Alt+Q</code>' },
+            { tag: 'FIXED', name: 'if name attribute not found in the form field then also generate excel sheet.' },
             { tag: 'ADDED', name: '<a href="https://www.youtube.com/playlist?list=PLmrTMUhqzS3hCXSMbmgmh71-h-kwYAQ3t" target="_blank">💻 Video Tutorial - Playlist</a>' },
-            { tag: 'ADDED', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v017" target="_blank">Others Changelog</a>' },
+            { tag: 'ADDED', name: '<a href="https://github.com/ctechhindi/Fill-Excel-Data-on-HTML-Form#v018" target="_blank">Others Changelog</a>' },
           ],
         }
       ]
