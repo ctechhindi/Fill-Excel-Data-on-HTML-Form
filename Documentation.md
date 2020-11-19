@@ -90,12 +90,12 @@
 
 ## Predefined Custom Keys
 
+* `page_loaded` : After the page is fully loaded, you can give your Custom Script.
 * `fill_action` : If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
   ```js
   // With this, when you click on this HTML Element, only your Form Feed will start.
   document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
   ```
-* `page_loaded` : After the page is fully loaded, you can give your Custom Script.
 * `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `entry_saved` : After the form is successfully saved, you can give what script you want to run.
 * `status`

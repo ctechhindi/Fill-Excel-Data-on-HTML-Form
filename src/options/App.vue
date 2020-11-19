@@ -420,14 +420,9 @@
           </ul>
           <br>
           <h1 class="title is-5">Support Me for Motivation</h1>
-          <ul>
-            <li><code>₹10+</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Donate an Amount of your Choice</a></li>
-            <li><code>₹50&nbsp;</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Thank you for supporting C Tech Hindi.</a></li>
-            <li><code>₹100</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name will be put on the extension option page.</a></li>
-            <li><code>₹200</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name will be put to the top of extension option page.</a></li>
-            <li><code>₹500</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name or a company logo will be put to extension option page.</a></li>
-            <li><code>₹500+</code> <a target="_blank" href="https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html">Your name or a company logo will be put to extension option page and github repository readme page.</a></li>
-          </ul>
+          <a href="http://ctechhindi.in/extensions/fill-excel-data-on-html-form/#support" style="color: red;font-weight: 700;font-family: monospace;font-size: xx-large;" target="_blank">
+            Please Donate an Amount of your Choice
+          </a>
         </div>
       </b-tab-item>
 
@@ -603,14 +598,17 @@
               <option value="date">Date</option>
             </b-select>
           </b-field>
+
           <!-- Info Message Box: Multiple Checkbox -->
           <b-message type="is-info" v-if="colSettings.field_type === 'checkbox'">
             <p>Multiple checkbox appears like this <b-icon icon="checkbox-marked"></b-icon> and in these we can select multiple checkboxes.</p>
           </b-message>
+
           <!-- Info Message Box: Single Checkbox (Radio) -->
           <b-message type="is-info" v-if="colSettings.field_type === 'radio'">
             <p>The single checkbox appears like this <b-icon icon="radiobox-marked"></b-icon> and we can select only one such as Gender Male or Female.</p>
           </b-message>
+
           <!-- Field: Select Option with Drop-down value/name -->
           <b-field label="How to fill the data in this Field" v-if="(['select', 'multiple'].indexOf(colSettings.field_type) !== -1)">
             <b-select placeholder="Type" v-model="colSettings.check_value_through" expanded>
@@ -619,10 +617,17 @@
               <option value="value">Through of Value</option>
             </b-select>
           </b-field>
+
+          <!-- Clear field value then fill new value -->
+          <b-field>
+            <b-checkbox v-model="colSettings.clearThenFillValue">Clear field value then fill new value</b-checkbox>
+          </b-field>
+
           <!-- If excel column value is empty then fill this default value -->
           <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1" expanded>
             <b-input v-model="colSettings.default_value" placeholder="Enter Field Deafult Value"></b-input>
           </b-field>
+
           <!-- Field: Select Option with RegExp -->
           <b-field label="If you want to match the excel data with this form field data then turn on RegExp." v-if="(['select', 'multiple', 'radio', 'checkbox'].indexOf(colSettings.field_type) !== -1)">
             <b-checkbox v-model="colSettings.check_value_with_regexp">Search Data with RegExp</b-checkbox>
@@ -860,6 +865,8 @@ export default {
         // After filling the data of this field, filling the data of another field
         isAfterFillFields: false,
         afterFillFields: [],
+        // Clear field value then fill new value
+        clearThenFillValue: false,
       },
       // Javascript Events
       javascriptEventList: ["click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload"],
@@ -869,9 +876,13 @@ export default {
       releaseNotesData: [
         // Tags: NEW, ADDED, FIXED, IMPROVED
         {
-          version: '0.1.7 - 0.1.8',
-          date: 'Thursday, 12 November 2020',
+          version: '0.1.9+',
+          date: 'Thursday, 19 November 2020',
           desc: [
+            { tag: 'NEW', name: 'Clear field value then fill new value.' },
+            { tag: 'FIXED', name: 'Not working in the Angular Site.' },
+            { tag: 'FIXED', name: 'Custom keys `page_loaded` and <code>fill_action</code> running time.' },
+            { tag: 'FIXED', name: 'Check Success Message.' },
             { tag: 'IMPROVED', name: 'If your data is not able to feed after this update, then fetch the Excel column again.' },
             { tag: 'NEW', name: 'Typewriter Effect and Set Typewriter Speed while filling data in the field' },
             { tag: 'NEW', name: 'Change Field Background color of fill data completed in the form field.' },
@@ -1590,6 +1601,9 @@ export default {
           // After filling the data of this field, filling the data of another field.
           this.colSettings.isAfterFillFields = colData.settings.isAfterFillFields
           this.colSettings.afterFillFields = colData.settings.afterFillFields
+          // Clear field value then fill new value
+          this.colSettings.clearThenFillValue = colData.settings.clearThenFillValue
+
         } else {
           // Rest Variables old Data
           this.colSettings.field_type = "text"
@@ -1608,6 +1622,7 @@ export default {
           // After filling the data of this field, filling the data of another field.
           this.colSettings.isAfterFillFields = false
           this.colSettings.afterFillFields = []
+          this.colSettings.clearThenFillValue = false
         }
         
         // Open Column Settings Model
@@ -1653,6 +1668,8 @@ export default {
         // After filling the data of this field, filling the data of another field
         this.$set(colData.settings, 'isAfterFillFields', this.colSettings.isAfterFillFields)
         this.$set(colData.settings, 'afterFillFields', this.colSettings.afterFillFields)
+        // Clear field value then fill new value
+        this.$set(colData.settings, 'clearThenFillValue', this.colSettings.clearThenFillValue)
 
         this.$buefy.toast.open({
           message: `Column Settings has been successfully Saved. `,

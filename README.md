@@ -143,6 +143,13 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.1.9
+
+* `NEW: ` Clear field value then fill new value.
+* `FIXED:` Not working in the Angular Site.
+* `FIXED:` Custom keys `page_loaded` and `fill_action` running time.
+* `FIXED:` Check Success Message.
+
 ### V.0.1.8
 
 * `NEW: ` Change Field Background color of fill data completed in the form field.
