@@ -143,6 +143,10 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.0
+
+* `FIXED:` src/script/root.js:14~15
+
 ### V.0.1.9
 
 * `NEW: ` Clear field value then fill new value.
