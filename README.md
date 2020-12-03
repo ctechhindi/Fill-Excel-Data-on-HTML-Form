@@ -143,6 +143,11 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.1
+
+* `FIXED:` If select box options length is 0 then showing error.
+  * `src/background.js:203`
+
 ### V.0.2.0
 
 * `FIXED:` src/script/root.js:14~15

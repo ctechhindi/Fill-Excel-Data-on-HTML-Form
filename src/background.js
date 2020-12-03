@@ -1,5 +1,6 @@
 global.browser = require('webextension-polyfill')
 const Excel = require("exceljs"); // https://github.com/exceljs/exceljs
+// import * as Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 
 /**
@@ -178,7 +179,7 @@ function onCopyElement(option, tab) {
     // Generate Excel Template Using Active Page Form Fields
     chrome.tabs.sendMessage(tab.id, { target: "generateExcelTemplate" }, fields => {
       if (fields.length > 0) {
-        console.log("Form Fields: ", fields)
+        // console.log("Form Fields: ", fields)
 
         /**
          * Excel Main Sheet: Site Form Data
@@ -198,6 +199,11 @@ function onCopyElement(option, tab) {
         for (let index = 0; index < fields.length; index++) {
           const field = fields[index];
           const fieldKey = field.name + "_" + index
+
+          // BUGFIXED: if select box value is empty then insert only one object in the value key
+          if (field.field === "select" && field.value.length === 0) {
+            field.value.push({name: "Select", value: ""});
+          }
 
           /**
            * First Sheet: Push Table Column
@@ -355,6 +361,8 @@ function onCopyElement(option, tab) {
           var date = new Date()
           var dateFor = date.getDate() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getFullYear()
           saveAs(blob, urlObj.host + '-' + dateFor + fileExtension);
+        }).catch((err) => {
+          console.error("err", err);
         });
 
       } else {
