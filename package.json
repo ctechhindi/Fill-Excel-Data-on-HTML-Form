@@ -1,6 +1,6 @@
 {
   "name": "fill-excel-data-to-form",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Fill Excel Sheet Data into HTML Online Forms",
   "author": "Jeevan Lal <jeevan15498@gmail.com>",
   "license": "MIT",

@@ -228,6 +228,12 @@
                       <code :title="index">{{ data.key }}</code>
                     </span>
                     <span
+                      v-else-if="data.key === 'background_response'"
+                      title="If Request Run is being done in Background After this, if a success message is received."
+                    >
+                      <code :title="index">{{ data.key }}</code>
+                    </span>
+                    <span
                       v-else-if="data.key === 'page_loaded'"
                       title="After the page is fully loaded, you can give your Custom Script."
                     >
@@ -588,7 +594,7 @@
         <section class="modal-card-body">
           <!-- This Field Type use fetchColInExcelData() function -->
           <!-- Field Type: text, select, file, checkbox, radio, multi-select, textarea -->
-          <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1">
+          <b-field label="Field Type" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) == -1">
             <b-select placeholder="Select Field Type" v-model="colSettings.field_type" expanded>
               <option value="text">Text</option>
               <option value="select">Select (Drop-down)</option>
@@ -619,12 +625,12 @@
           </b-field>
 
           <!-- Clear field value then fill new value -->
-          <b-field>
+          <b-field v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) == -1">
             <b-checkbox v-model="colSettings.clearThenFillValue">Clear field value then fill new value</b-checkbox>
           </b-field>
 
           <!-- If excel column value is empty then fill this default value -->
-          <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1" expanded>
+          <b-field label="If excel column value is empty then fill this default value" v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) == -1" expanded>
             <b-input v-model="colSettings.default_value" placeholder="Enter Field Deafult Value"></b-input>
           </b-field>
 
@@ -651,7 +657,7 @@
           </div>
 
           <!-- Trigger Javascript Event  -->
-          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1" style="padding-bottom: 10px;">
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) == -1" style="padding-bottom: 10px;">
             <label class="label">Trigger Javascript Event</label>
             <b-field>
               <p class="control">
@@ -665,7 +671,7 @@
           </div>
 
           <!-- After filling the data of this field, filling the data of another field. -->
-          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved'].indexOf(activeSiteColNameOrignal) == -1">
+          <div v-if="['fill_action', 'page_loaded', 'form_filled', 'entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) == -1">
             <label class="label">After filling the data of this field, filling the data of another field</label>
             <b-field>
               <p class="control">
@@ -680,7 +686,7 @@
 
           <!-- Pre-Define Keys -->
           <!-- Action Name -->
-          <b-field label="If Entry Saved Then Run Action" v-if="['entry_saved'].indexOf(activeSiteColNameOrignal) !== -1">
+          <b-field label="If Entry Saved Then Run Action" v-if="['entry_saved', 'background_response'].indexOf(activeSiteColNameOrignal) !== -1">
             <b-select placeholder="Select Action" v-model="colSettings.action_name" expanded>
               <option value="redirect">Redirect to Another Page</option>
             </b-select>
@@ -766,7 +772,7 @@ export default {
       /**
        * Custom/Pre-Define Key in the Excel Data
        */
-      preDefineKey: [ "fill_action", "page_loaded", "form_filled", "entry_saved", "status", "isLoading", "totalErrorRequest"],
+      preDefineKey: [ "background_response", "fill_action", "page_loaded", "form_filled", "entry_saved", "status", "isLoading", "totalErrorRequest"],
       // Active Tab Index
       activeTabIndex: 3,
       // Excel Sheet Data

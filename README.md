@@ -143,6 +143,14 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.2
+
+* Add new key `background_response` = If Request Run is being done in Background After this, if a success message is received.
+* If manually check saved checkbox run this js in the console
+  ```js
+  FillRoot.manuallySavedActiveEntry()
+  ```
+
 ### V.0.2.1
 
 * `FIXED:` If select box options length is 0 then showing error.

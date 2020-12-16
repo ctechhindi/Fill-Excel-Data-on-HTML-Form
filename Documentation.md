@@ -98,6 +98,7 @@
   ```
 * `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `entry_saved` : After the form is successfully saved, you can give what script you want to run.
+* `background_response`: If Request Run is being done in Background After this, if a success message is received.
 * `status`
 * `isLoading`
 * `totalErrorRequest`
@@ -117,4 +118,10 @@ console.log(FillAPP.cKeyName);
 
 // Fetch Current Active Key/Column Details (object)
 console.log(FillAPP.htmlKeys[FillAPP.cKeyName]);
+```
+
+## If manually check saved checkbox run this js in the console
+
+```js
+FillRoot.manuallySavedActiveEntry()
 ```
