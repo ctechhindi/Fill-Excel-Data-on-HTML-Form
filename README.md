@@ -143,6 +143,10 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.3
+
+* `NEW: ` If excel entry is uploaded then download uploaded and uncompleted entry in the excel sheet.
+
 ### V.0.2.2
 
 * Add new key `background_response` = If Request Run is being done in Background After this, if a success message is received.

@@ -4,6 +4,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
+// https://github.com/Turbo87/webpack-notifier
+var WebpackNotifierPlugin = require('webpack-notifier');
 const { version } = require('./package.json');
 const JavascriptFilesInject = require("./plugins/javascript-files-inject.js");
 
@@ -112,7 +114,10 @@ const config = {
       templateFile: "script/templates/run_2-template.js",
       outputFile: __dirname + '/dist/script/inject-run.js',
       minify: true,
-    })
+    }),
+    new WebpackNotifierPlugin({
+      alwaysNotify: true
+    }),
   ]
 };
 

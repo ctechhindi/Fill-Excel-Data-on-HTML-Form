@@ -373,6 +373,14 @@
                   @click="convertExcelData"
                 >Fetch Excel Data</b-button>
               </b-tooltip>&nbsp;
+              <b-tooltip label="Download Data with Response">
+                <b-button
+                  type="is-danger"
+                  position="is-left"
+                  icon-left="download"
+                  @click="downloadRespnseExcelData"
+                ></b-button>
+              </b-tooltip>&nbsp;
             </div>
           </nav>
           <table
@@ -753,6 +761,8 @@ Vue.use(
   events: ['scroll', ...]
 } */
 );
+const Excel = require("exceljs"); // https://github.com/exceljs/exceljs
+import { saveAs } from 'file-saver';
 
 // https://wikiki.github.io/components/timeline/
 import 'bulma-extensions/bulma-timeline/dist/css/bulma-timeline.min.css'
@@ -1756,6 +1766,60 @@ export default {
           this.excelSheetJSONData.total = excelData.length; // Excel JSON Data Length
         }
       });
+    },
+    
+    /**
+     * Download Entry Response in the excel Sheet
+     */
+    downloadRespnseExcelData() {
+      if (!this.excelSheetJSONData === false && typeof(this.excelSheetJSONData) === "object") {
+        if (!this.excelSheetJSONData.obj === false && this.excelSheetJSONData.obj.length > 0) {
+          // console.log(this.excelSheetJSONData.obj);
+
+          /**
+           * Excel Main Sheet
+           * ---------------
+           * Set Table Columns
+           * Then Add Rows
+           */
+          const workbook = new Excel.Workbook();
+          const sheet = workbook.addWorksheet('Site Form Data'); // Site Form Data
+
+          // Sheet Table Colums
+          var firstSheetColumns = [];
+          for (let index = 0; index < this.excelSheetJSONData.obj.length; index++) {
+            const field = this.excelSheetJSONData.obj[index];
+            
+            // Fetch Excel First Object Keys
+            if (index === 0) {
+              for (let colIndex = 0; colIndex < Object.keys(field).length; colIndex++) {
+                const colName =  Object.keys(field)[colIndex];
+                // Remove This Key from Columns: isLoading, status, totalErrorRequest
+                if (["isLoading", "totalErrorRequest"].indexOf(colName) === -1) {
+                  firstSheetColumns.push({ header: colName, key: colName })
+                }
+              }
+              // Push Columns in the Excel Sheet
+              sheet.columns = firstSheetColumns;
+            }
+
+            // if columns add then push row in the excel sheet
+            sheet.addRow(field);
+          }
+
+          // Save as Excel Sheet in the PC
+          workbook.xlsx.writeBuffer().then(function (res) {
+            const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            const fileExtension = '.xlsx';
+            const blob = new Blob([res], { type: fileType });
+            var date = new Date()
+            var dateFor = date.getDate() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getFullYear()
+            saveAs(blob, "response_" + dateFor + fileExtension);
+          }).catch((err) => {
+            console.error("err", err);
+          });
+        }
+      }
     },
 
     /**
