@@ -245,7 +245,7 @@
                     >
                       <code :title="index">{{ data.key }}</code>
                     </span>
-                    <span v-else :title="index">{{ data.key }}</span>
+                    <span v-else :title="index" class="copytext" :data-clipboard-text="index">{{ data.key }}</span>
                   </td>
                   <td style="width: 250px;">
                     <b-field v-if="['page_loaded'].indexOf(data.key) < 0">
@@ -766,6 +766,9 @@ import { saveAs } from 'file-saver';
 
 // https://wikiki.github.io/components/timeline/
 import 'bulma-extensions/bulma-timeline/dist/css/bulma-timeline.min.css'
+
+// https://github.com/zenorocha/clipboard.js#readme
+import ClipboardJS from "clipboard";
 
 // Header
 import Header from "../components/Header";
@@ -2008,6 +2011,17 @@ export default {
           } else {
           that.activeTabIndex = budget.tabVal__activeTabIndex;
         }
+    });
+  },
+  mounted() {
+
+    // Clipboard Action
+    var clipboard = new ClipboardJS('.copytext');
+    clipboard.on('success', (e) => {
+      this.$buefy.snackbar.open('Copied Colum Key: '+ e.text)
+    });
+    clipboard.on('error', (e) => {
+      this.$buefy.snackbar.open('Error form Copy.')
     });
   },
 };

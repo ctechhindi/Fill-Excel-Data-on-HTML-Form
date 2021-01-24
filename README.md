@@ -143,6 +143,21 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.4
+
+* NEW: Manually Feed Field Data According to You, Put You JS Code in the `form_filled` key.
+* NEW: Click on the excel column name then copied column key name in the clipboard.
+```js
+// Fill Field
+FillAPP.CFD.fillColumnData("00000_field_1")
+FillAPP.CFD.fillColumnData("00001_monthinput", { 
+  event: ["click", "change"] 
+})
+FillAPP.CFD.fillColumnData("00002_yearinput")
+```
+* Library: `https://github.com/zenorocha/clipboard.js#readme`
+* Storage Excel Columns Fields Data in the Local Storage. `fillDataV1__excelColumn`
+
 ### V.0.2.3
 
 * `NEW: ` If excel entry is uploaded then download uploaded and uncompleted entry in the excel sheet.

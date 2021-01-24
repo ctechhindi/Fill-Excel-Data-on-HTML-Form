@@ -26,6 +26,8 @@ const config = {
     // Temp Scripts
     'temp/script1': './script/run_2.js',
     'temp/script2': './script/templates/run_2-template.js',
+    // 'temp/script3': './script/custom_form_functions.js',
+    // 'temp/script4': './script/templates/custom_form_functions-template.js'
   },
   output: {
     path: __dirname + '/dist',
@@ -115,6 +117,12 @@ const config = {
       outputFile: __dirname + '/dist/script/inject-run.js',
       minify: true,
     }),
+    // new JavascriptFilesInject({
+    //   scriptFile: "script/custom_form_functions.js",
+    //   templateFile: "script/templates/custom_form_functions-template.js",
+    //   outputFile: __dirname + '/dist/script/custom-action.js',
+    //   minify: true,
+    // }),
     new WebpackNotifierPlugin({
       alwaysNotify: true
     }),
