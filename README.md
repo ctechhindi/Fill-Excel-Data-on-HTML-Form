@@ -143,6 +143,13 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.0.2.5
+
+* NEW: `element_exists` : Form will start feeding when this element is visible.
+  - ![](./screenshot/element_exists.gif)
+* NEW: Add `hostname` URL Type in Form URL and Success Page URL
+* NEW: Global Variable using in Excel Column Custom JS Script Option.
+
 ### V.0.2.4
 
 * NEW: Manually Feed Field Data According to You, Put You JS Code in the `form_filled` key.
@@ -157,6 +164,7 @@ FillAPP.CFD.fillColumnData("00002_yearinput")
 ```
 * Library: `https://github.com/zenorocha/clipboard.js#readme`
 * Storage Excel Columns Fields Data in the Local Storage. `fillDataV1__excelColumn`
+* Improve: Generate excel sheet for feeding in the site.
 
 ### V.0.2.3
 

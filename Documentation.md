@@ -99,6 +99,8 @@
 * `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `entry_saved` : After the form is successfully saved, you can give what script you want to run.
 * `background_response`: If Request Run is being done in Background After this, if a success message is received.
+* `element_exists`: Form will start feeding when this element is visible.
+  - ![](./screenshot/element_exists.gif)
 * `status`
 * `isLoading`
 * `totalErrorRequest`
@@ -110,18 +112,46 @@
 Global Variable in the Key's Custom JS Script.
 
 ```js
-// Current Active Excel Row Data in the JSON Format (object)
-console.log(FillAPP.cData);
+// Active Site Form Elements Data Object
+console.log(FillAPP.elementObject);
 
-// Current Active Key/Column Name (string)
-console.log(FillAPP.cKeyName);
+// Current Active Column Name (Which field is being feed at the moment.)
+console.log(FillAPP.activeElementName);
+console.log(FillAPP.activeElementKey);
+console.log(FillAPP.elementObject[FillAPP.activeElementKey]);
 
-// Fetch Current Active Key/Column Details (object)
-console.log(FillAPP.htmlKeys[FillAPP.cKeyName]);
+// Which entry will be feed in the form at this time.
+console.log(FillAPP.activeExcelIndex);
+console.log(FillAPP.excelData);
+console.log(FillAPP.excelData[FillAPP.activeExcelIndex - 1]);
 ```
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 
 ## If manually check saved checkbox run this js in the console
 
 ```js
 FillRoot.manuallySavedActiveEntry()
 ```
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+## Insert Custom Javascript For Fill Form Data
+
+Manually Feed Field Data According to You, Put You `JS Code` in the `form_filled` key, If click on the excel column name then copied column `key name` in the clipboard.
+
+```js
+// Fill Field
+FillAPP.CFD.fillColumnData("00000_field_1")
+FillAPP.CFD.fillColumnData("00001_field_2", { 
+  event: ["click", "change"] 
+})
+FillAPP.CFD.fillColumnData("00002_field_3")
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+## Set Custom Key in the Chrome Extension Page
+
+![Set Key for RUN Form](screenshot/set_key_for_run.png)
