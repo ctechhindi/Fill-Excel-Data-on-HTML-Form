@@ -133,6 +133,11 @@ console.log(FillAPP.excelData[FillAPP.activeExcelIndex - 1]);
 
 ```js
 FillRoot.manuallySavedActiveEntry()
+
+// Promise
+(async function () {
+  console.log(await FillRoot.manuallySavedActiveEntry());
+})();
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;
