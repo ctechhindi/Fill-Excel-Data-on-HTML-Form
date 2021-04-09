@@ -92,10 +92,6 @@
 
 * `page_loaded` : After the page is fully loaded, you can give your Custom Script.
 * `fill_action` : If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
-  ```js
-  // With this, when you click on this HTML Element, only your Form Feed will start.
-  document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
-  ```
 * `form_filled` : After the form is successful feeded, you can give what script you want to run.
 * `entry_saved` : After the form is successfully saved, you can give what script you want to run.
 * `background_response`: If Request Run is being done in Background After this, if a success message is received.
@@ -109,35 +105,11 @@
 
 ## Global Variable using in Excel Column Custom JS Script Option
 
-Global Variable in the Key's Custom JS Script.
+Global Variable.
 
 ```js
-// Active Site Form Elements Data Object
-console.log(FillAPP.elementObject);
-
-// Current Active Column Name (Which field is being feed at the moment.)
-console.log(FillAPP.activeElementName);
-console.log(FillAPP.activeElementKey);
-console.log(FillAPP.elementObject[FillAPP.activeElementKey]);
-
-// Which entry will be feed in the form at this time.
-console.log(FillAPP.activeExcelIndex);
-console.log(FillAPP.excelData);
-console.log(FillAPP.excelData[FillAPP.activeExcelIndex - 1]);
-```
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
-
-## If manually check saved checkbox run this js in the console
-
-```js
-FillRoot.manuallySavedActiveEntry()
-
-// Promise
-(async function () {
-  console.log(await FillRoot.manuallySavedActiveEntry());
-})();
+// All Active Excel Entry Data
+console.log(FillAPP.sData);
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;

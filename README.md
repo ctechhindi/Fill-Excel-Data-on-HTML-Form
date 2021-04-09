@@ -15,7 +15,8 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Automatic click form submit button
 * Insert custom javascript in the form fields
 * Provide Toolbar
-* Extension Context Menu Option
+* Extension Context Menu Option.
+* Hide JS Alert Message. 
 * and more..
 
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
@@ -32,97 +33,17 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 
 ![](screenshot/Screenshot(141).png)
 
-![](screenshot/Screenshot(142).png)
-
 ![](screenshot/Screenshot(143).png)
 
 ![](screenshot/Screenshot(144).png)
 
-![](screenshot/Screenshot (210).png)
+![](screenshot/Screenshot(25).png)
 
-
-## 🚀 Debugging
-
-Only for computer insect.
-
-```bash
-npm run build:dev
-npm run watch
-npm run watch:dev
-npm run build-zip
-```
-
-## Tips Before Build
-
-- Comment all log messages
-- Delete Temp Folder
-
-```
-<!-- Delete dist folder then run this commands -->
-npm run build
-npm run build-zip
-```
 
 ## Using Libraries
 
 * [vue-codemirror](https://github.com/surmon-china/vue-codemirror)
 * [SelectorGenerator](https://github.com/flamencist/SelectorGenerator)
-
-## Keys Custom JS Script [Request Page]
-
-```js
-var currentFillData = this.data;
-```
-
-## Extension Page
-
-```
-chrome-extension://celcfdcmlebphlhcadpiepjliabdobhj/options/options.html
-chrome-extension://celcfdcmlebphlhcadpiepjliabdobhj/request/request.html
-```
-
-## Custom Class
-
-1. `CreateRequest.js`
-
-```js
-try {
-
-    var req = new CreateRequest({
-      "url": String,
-      "field": {
-        G_bene_gender: {
-          defaultValue: ""
-          field: "G_bene_gender"
-          isFieldRequired: true
-          is_runJScript: false
-          jscript: ""
-          key: "guar_gender"
-        },
-        ...
-      },
-      "data": {
-        ben_dob: "2015-07-12"
-        ben_gender: "Male"
-        status: (...),
-        ...
-      },
-      "successMsg": String,
-      "successStatusCode": Number,
-    });
-
-    // Sent Request
-    req.sentRequest()
-
-} catch (e) {
-    console.error(e)
-}
-```
-
-
-## 🚫 Errors
-
-* https://stackoverflow.com/questions/21177387/caution-provisional-headers-are-shown-in-chrome-debugger
 
 ## Browser Support
 
@@ -143,219 +64,24 @@ try {
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
-### V.0.2.5
+### V.3.0.0
 
-* NEW: `element_exists` : Form will start feeding when this element is visible.
-  - ![](./screenshot/element_exists.gif)
-* NEW: Add `hostname` URL Type in Form URL and Success Page URL
-* NEW: Global Variable using in Excel Column Custom JS Script Option.
+* `NEW:` This Version Form Filler Script Run On Page Load.
+* `NEW:` Hide JS Alert Message. Hide Option Available in the Application Settings.
+* `NEW:` Timeout Feature `Before` and `After`
+* `NEW:` Add Option in the Extension Context Menu
+  - Copy Select Box Selected Option Name
+  - Copy Select Box Selected Option Value
+* **Predefined Custom Keys**
+  - `page_loaded`
+  - `form_filled`
+  - `fill_action`
+  - `element_exists`
+  - `background_response`
+  - `entry_saved`
+* `FIXED:` Error in the `fetch_form_fields.js` file.
 
-### V.0.2.4
-
-* NEW: Manually Feed Field Data According to You, Put You JS Code in the `form_filled` key.
-* NEW: Click on the excel column name then copied column key name in the clipboard.
-```js
-// Fill Field
-FillAPP.CFD.fillColumnData("00000_field_1")
-FillAPP.CFD.fillColumnData("00001_monthinput", { 
-  event: ["click", "change"] 
-})
-FillAPP.CFD.fillColumnData("00002_yearinput")
-```
-* Library: `https://github.com/zenorocha/clipboard.js#readme`
-* Storage Excel Columns Fields Data in the Local Storage. `fillDataV1__excelColumn`
-* Improve: Generate excel sheet for feeding in the site.
-
-### V.0.2.3
-
-* `NEW: ` If excel entry is uploaded then download uploaded and uncompleted entry in the excel sheet.
-
-### V.0.2.2
-
-* Add new key `background_response` = If Request Run is being done in Background After this, if a success message is received.
-* If manually check saved checkbox run this js in the console
-  ```js
-  FillRoot.manuallySavedActiveEntry()
-  ```
-
-### V.0.2.1
-
-* `FIXED:` If select box options length is 0 then showing error.
-  * `src/background.js:203`
-
-### V.0.2.0
-
-* `FIXED:` src/script/root.js:14~15
-
-### V.0.1.9
-
-* `NEW: ` Clear field value then fill new value.
-* `FIXED:` Not working in the Angular Site.
-* `FIXED:` Custom keys `page_loaded` and `fill_action` running time.
-* `FIXED:` Check Success Message.
-
-### V.0.1.8
-
-* `NEW: ` Change Field Background color of fill data completed in the form field.
-  - ![](./screenshot/field_bg_color.png)
-* `FIXED:` if name attribute not found in the form field then also generate excel sheet.
-* `FIXED:` Field name in the Extension Popup Page
-* `FIXED:` If form submit then redirect not working.
-
-### V.0.1.7
-
-* Typewriter Effect and Set Typewriter Speed while filling data in the field
-  - ![](./screenshot/typewriter-effect.png)
-* Start/Pause Application With `Alt+Q`
-* `FIXED:` Column Settings Model Not Open
-
-### V.0.1.6
-
-* `NEW:` After filling the data of field, filling the data of another field.
- - ![](./screenshot/after_fill_data-01.png)
-* `IMPROVE:` Automatic Generate Excel Sheet according to form fields
-* `FIXED:` Date Format in Uppercase
-
-### V.0.1.5
-
-* `NEW:` To change the Date Format of a column in Excel so that you can change the Date Format according to the Form.
-* Date Formats:
-  | Excel Column Date | Convert to this Format | Output |
-  | ----------------- | ---------------------- | --------------------- |
-  | 05-11-2020 | `DD` | 05 |
-  | 05-11-2020 | `MM` | 11 |
-  | 05-11-2020 | `YY` | 20 |
-  | 05-11-2020 | `YYYY` | 2020 |
-  | 05-11-2020 | `MM-DD-YYYY` | 11-05-2020 |
-  | 05-11-2020 | `MM/DD/YYYY` | 11/05/2020 |
-* All Date Format: https://momentjs.com/docs/#/displaying/format/
-
-### V.0.1.4
-
-* `NEW: ` Application Settings
- - ![](./screenshot/fill-excel-extension-001.png)
-* `NEW: ` Option to turn on and off the Toolbar feature and second option to reposition it to the top or bottom of the screen.
-* `NEW: ` Check Get Parameters in the Options Page URL `"?tab=1&update=0"`
-
-### V.0.1.3
-
-* `FIXED: ` Background Javascript Error
-
-### V.0.1.2
-
-* Video Tutorial: https://youtu.be/YQjNpHHdYvo
-* `NEW: ` Support Page: https://ctechhindi.blogspot.com/2020/10/support-page-fill-excel-data-cth-google.html
-* `NEW: ` Show Total Entry and Active Entry Number in the Toolbar
-* `NEW: ` If are you using generate excel method then field address and field settings (field type) data automatic set.
-* `FIXED: ` Some excel sheet columns data not fetch in the extension options page.
-* `IMPROVE: ` Extension Context Menu Option
-  * ![Copy Field Address](./screenshot/copy-element-selector2.png)
-
-### V.0.1.1
-
-* `NEW: ` Trigger Javascript Event in the Form Field
-  * "click",
-  * "dblclick",
-  * "change",
-  * "copy",
-  * "cut",
-  * "paste",
-  * "submit",
-  * "focus",
-  * "focusin",
-  * "focusout",
-  * "mousedown",
-  * "mouseenter",
-  * "mouseleave",
-  * "mousemove",
-  * "mouseup",
-  * "mouseover",
-  * "mouseout",
-  * "input",
-  * "keydown",
-  * "keypress",
-  * "keyup",
-  * "load",
-  * "unload"
-* `FIXED: ` If insert second form url and then delete second form url then showing error
-* `NEW: ` Add Option in the Chrome `Right Option Menu`, Copy Field Address
-  * ![Copy Field Address](./screenshot/copy-element-selector.png)
-
-### V.0.1.0
-
-* `INSERT: ` About Us Tab
-
-### V.0.0.9
-
-* `BIG CHANGE: ` Insert Multiple Action Site
-* `FIXED: ` Success Message not working in the different domain
-* About Video: https://youtu.be/IV6yMHf2rNo
-
-### V.0.0.8
-
-* Full Page Loading in the `Request Send Page`.
-* Add Request Settings Tab in the `Request Send Page`.
-* Count Total Successfully Saved Entry Data in the `Request Send Page`.
-* Hide Request Error Message if run bulk entry in the `Request Send Page`.
-* Show and Hide Request Error Response Data in the `Request Send Page`.
-* Show request error if mouseover request status table row in the `Request Send Page`. 
-  * ![](screenshot/update/request_error.png)
-
-### V.0.0.7
-
-* Add new key `page_loaded` = After the page is fully loaded, you can give your Custom Script.
-* Add new key `fill_action` = If you do not want Automatic Form Feed or your form opens after any request, then you can place Javascript event in any HTML Element in the page.
-  * अगर आप Automatic Form Feed नहीं करवाना चाहते या फिर आपका Form किसी Request के बाद Open होता है तो आप Page में किसी भी HTML Element में Javascript event लगा सकते है तो जैसे वह Event Call होगा Form Feed हो जायेगा।
-  * Select HTML Element and Run Javascript Event on selected html element
-  * Event Types: "click", "dblclick", "change", "copy", "cut", "paste", "submit", "focus", "focusin", "focusout", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseup", "mouseover", "mouseout", "input", "keydown", "keypress", "keyup", "load", "unload", "force"
-  ```js
-  // With this, when you click on this HTML Element, only your Form Feed will start.
-  document.querySelector("#htmlElm").addEventListener("click", FillAPP.checkNextEntry);
-  ```
-* Send all the requests at once in the `Request Send Page`.
-* Stop/Reset `Request Status` in the `Request Send Page`.
-* Add New Library `npm install --save xlsx`
-* Export Request Excel Data in the Excel Sheet.
-
-### V.0.0.6
-
-* FOR this site `https://trade.algofox.in`
-
-### V.0.0.5
-
-* Fixed Success URL not Match.
-* Add new key `form_filled` = After the form is successful feeded, you can give what script you want to run.
-
-### V.0.0.4
-
-* Fix Spelling Mistake
-* Fix copy element selector 
-* Using new library
-
-### V.0.0.3
-
-* Fix Bug: auto save entry
-
-### V.0.0.2
-
-* After the form is successful submit, you can give what script you want to run in this custom key `form_submit`.
-* Run those `keys` which are not in the excel sheet
-* Fix Spelling Mistake
-* Add Action URL Type `{fullPath, pathName}`
-* Update Auto Catch Element Identity
-* Add Demo Site and Excel Sheet Data
-* https://phppot.com/demo/php-user-registration-form/
-
-### V.0.0.1 `(Beta)`
-
-* Form Data Request Sent on Server
-* Fill Automatic HTML Form
-* Use Custom JS Script in HTML Field's
-
-## Reporting Issues radioactive
-
-If you have a problem with this plugin or found any bug, please open an issue on GitHub.
 
 ## 📝 Copyright and License copyright
 
-Code copyright 2020 ctechhindi. Code released under the MIT license.
+Code copyright 2021 ctechhindi. Code released under the MIT license.
