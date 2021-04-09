@@ -19,6 +19,10 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Hide JS Alert Message. 
 * and more..
 
+## Flowchart
+
+![](flowchart.svg)
+
 ## 📦 [Install Extension](https://chrome.google.com/webstore/detail/fill-excel-data/hbdlidnbnmkmbeompcakgedghogdbbkf)
 
 ## 🎬 [Video Tutorial](https://www.youtube.com/playlist?list=PLmrTMUhqzS3hCXSMbmgmh71-h-kwYAQ3t)
@@ -63,6 +67,9 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Automatic set multiple select field type
 * Radio Field Selector only name not id
 * Not Work in the Google Form
+
+### V.3.0.1
+
 
 ### V.3.0.0
 
