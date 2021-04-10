@@ -68,8 +68,18 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.3.0.3
+
+
+### V.3.0.2
+
+* `NEW:` Save Entry Response Message Data in the Excel Sheet.
+  - Custom Key `save_response_message`
+
 ### V.3.0.1
 
+* `FIXED:` Checkbox element not show in the generate excel sheet.
+* `FIXED:` Form field radio button event not run selected radio element.
 
 ### V.3.0.0
 
