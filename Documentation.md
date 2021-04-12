@@ -97,7 +97,8 @@
 * `background_response`: If Request Run is being done in Background After this, if a success message is received.
 * `element_exists`: Form will start filled when this element is visible.
   - ![](./screenshot/element_exists.gif)
-* `save_response_message` :  Save Entry Response Message Data in the Excel Sheet.
+* `save_response_message` :  Save Entry Response Message Data in the Excel Sheet Column `[Entry Response Message - {0-9}]`.
+- `error_messages` :  If the error message matches while filling the entry, then the entry will skip and the error will be added to the Excel sheet. `[Entry Error Message - {0-9}]`.
 * `status`
 * `isLoading`
 * `totalErrorRequest`

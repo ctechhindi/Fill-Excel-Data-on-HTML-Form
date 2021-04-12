@@ -68,12 +68,20 @@ Fill data in HTML form with Excel sheet from Chrome Extension.
 * Radio Field Selector only name not id
 * Not Work in the Google Form
 
+### V.3.0.5
+
+
+### V.3.0.4
+
+* `NEW:` `error_messages` :  If the error message matches while filling the entry, then the entry will skip and the error will be added to the Excel sheet. `[Entry Error Message - {0-9}]`.
+
 ### V.3.0.3
 
+* `FIXED:` If success message not found in the page not stop check success message loop.
 
 ### V.3.0.2
 
-* `NEW:` Save Entry Response Message Data in the Excel Sheet.
+* `NEW:` Save Entry Response Message Data in the Excel Sheet [Entry Response Message - {0-9}].
   - Custom Key `save_response_message`
 
 ### V.3.0.1
