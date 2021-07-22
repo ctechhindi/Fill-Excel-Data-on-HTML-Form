@@ -30,7 +30,7 @@
     "vue-codemirror": "^4.0.6",
     "vue-router": "^3.4.2",
     "webextension-polyfill": "^0.3.1",
-    "xlsx": "^0.16.5"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
